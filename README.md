@@ -2,7 +2,7 @@
 
 roles:
 
-kian: **alg**
+kian: **alg**  
+owen: **alg**  
 sarina: **gui**
-
-owen and ryan: **do shit**
+ryan: **manage shit plz**
