@@ -4,5 +4,5 @@ roles:
 
 kian: **alg**  
 owen: **alg**  
-sarina: **gui**
+sarina: **gui**  
 ryan: **manage shit plz**
