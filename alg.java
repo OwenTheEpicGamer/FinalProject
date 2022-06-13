@@ -11,6 +11,7 @@ public class alg {
     private char[][] grid;
     private Set<String> dict;
     private Set<String> wordList;
+    private int player1Points;
 
     private alg(int SIZE) {
         // constructor method, makes all the variables and calls generateGrid();
@@ -88,6 +89,17 @@ public class alg {
 
             checkPossibilities(word + nextLetter, nextRow, nextColumn);
         }
+    }
+
+    private int addPoints(String word, int pointsCount) {
+        int wordLength = switch(word.length()) {
+            case 3, 4 -> pointsCount + 1;
+            case 5 -> pointsCount + 2;
+            case 6 -> pointsCount + 3;
+            case 7 -> pointsCount + 5;
+            default -> pointsCount + 11;
+        };
+        return pointsCount;
     }
 
 }
