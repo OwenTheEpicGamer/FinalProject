@@ -1,9 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Scanner;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class alg {
     private final int SIZE;
@@ -11,8 +9,9 @@ public class alg {
     private char[][] grid;
     private Set<String> dict;
     private Set<String> wordList;
+    private int player1Points;
 
-    private alg(int SIZE) {
+    public alg(int SIZE) {
         // constructor method, makes all the variables and calls generateGrid();
         this.SIZE = SIZE;
         occupied = new boolean[SIZE][SIZE];
@@ -20,6 +19,12 @@ public class alg {
         generateGrid();
         generateDict();
         generateWordlist();
+
+        System.out.println(grid);
+        System.out.println(wordList);
+        System.out.println(wordList.toArray());
+        System.out.println(dict);
+        System.out.println(dict.toArray());
 
     }
 
@@ -36,7 +41,7 @@ public class alg {
 
         for (int row = 0; row < SIZE; row++) {
             for (int column = 0; column < SIZE; column++) {
-                int index = (row * SIZE + column) % 25;
+                int index = (row * SIZE + column) % dice.length;
                 // index will iterate through dice array and loop back to start when out of bounds
                 int randomInt = rand.nextInt(6);
                 grid[row][column] = dice[index].charAt(randomInt);
@@ -67,27 +72,66 @@ public class alg {
 
     }
 
-    private void checkPossibilities(String word, int row, int column) {
+    private void checkPossibilities(String startLetter, int row, int column) {
+        Deque<String> q = new ArrayDeque<String>();
+        q.addLast(String.valueOf(startLetter));
 
-        if (dict.contains(word)) {
-            wordList.add(word);
+        while (!q.isEmpty()) {
+            String word = q.pop();
+            if (dict.contains(word)) {
+                wordList.add(word);
+            }
+
+            // 2d array holding coords of all surrounding cells
+            int[][] neighbours = returnNeighbours(row, column);
+
+            for (int[] coord : neighbours) {
+                // next means the value for the next pass
+                int nextRow = coord[0];
+                int nextColumn = coord[1];
+
+                char nextLetter = grid[nextRow][nextColumn];
+                checkPossibilities(word + nextLetter, nextRow, nextColumn);
+                }
+            }
+        }
+    }
+
+
+    private int[][] returnNeighbours(int row, int column) {
+        ArrayList<int[]> neighbours = (ArrayList<int[]>) Arrays.asList(
+                new int[]{row + 1, column}, new int[]{row - 1, column},
+                new int[]{row, column + 1}, new int[]{row, column - 1},
+                new int[]{row + 1, column + 1}, new int[]{row - 1, column - 1},
+                new int[]{row + 1, column - 1}, new int[]{row - 1, column + 1});
+
+        for (int i = 0; i < neighbours.size(); i++) {
+            int r = neighbours.get(i)[0];
+            int c = neighbours.get(i)[1];
+            if (r < SIZE && c < SIZE && r >= 0 && c >= 0)){
+                neighbours.remove(i);
+                i--;
+            }
         }
 
-        // 2d array holding coords of all surrounding cells
-        int[][] neighbours = {
-                {row + 1, column}, {row - 1, column},
-                {row, column + 1}, {row, column - 1},
-                {row + 1, column + 1}, {row - 1, column - 1},
-                {row + 1, column - 1}, {row - 1, column + 1}};
-
-        for (int[] coord : neighbours) {
-            // next means the value for the next pass
-            int nextRow = coord[0];
-            int nextColumn = coord[1];
-            char nextLetter = grid[nextRow][nextColumn];
-
-            checkPossibilities(word + nextLetter, nextRow, nextColumn);
+        int[][] valid = new int[neighbours.size()][2];
+        for (int i = 0; i < neighbours.size(); i++) {
+            for (int j = 0; j < 2; j++) {
+                valid[i][j] = neighbours.get(i)[j];
+            }
         }
+        return valid;
+    }
+
+    private int addPoints(String word, int pointsCount) {
+        int wordLength = switch(word.length()) {
+            case 3, 4 -> pointsCount + 1;
+            case 5 -> pointsCount + 2;
+            case 6 -> pointsCount + 3;
+            case 7 -> pointsCount + 5;
+            default -> pointsCount + 11;
+        };
+        return pointsCount;
     }
 
 }
