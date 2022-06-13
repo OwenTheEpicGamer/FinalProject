@@ -1,5 +1,3 @@
-package gui;
-
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -28,6 +26,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     boolean pvp = false;
     boolean pvc = false;
+    boolean validTournScore = false;
     int tournScore;
     
     // instructions panel components
@@ -131,20 +130,36 @@ public class BoggleGUI extends JFrame implements ActionListener {
         String command = e.getActionCommand();
         
         if (command.equals("Play")) {
-            if (rbtnPlayer.isSelected()) {
-                pvp = true;
-                pnlStart.setVisible(false);
-                pnlStart2.setVisible(false);
-                pnlPlay.setVisible(true);
+            // determine if the tournament score entered is valid
+            if (txtTournScore.getText().matches("-?\\d+")) { // if tournament score is an integer
+                tournScore = Integer.parseInt(txtTournScore.getText());
+                
+                if(tournScore > 0 ) { // if tournament score is greater than 0
+                    validTournScore = true;
+                }
             }
-            else if (rbtnComp.isSelected()){
-                pvc = false;
-                pnlStart.setVisible(false);
-                pnlStart2.setVisible(false);
-                pnlPlay.setVisible(true);
+            if (!rbtnPlayer.isSelected() && !rbtnComp.isSelected() && !validTournScore) { // if invalid tournament score and no mode selected
+                lblStartPlay.setText("Please choose a mode and enter a valid tournament score.");
             }
-            else {
+            else if (!rbtnPlayer.isSelected() && !rbtnComp.isSelected()) { // if no mode selected
                 lblStartPlay.setText("Please choose a mode.");
+            }
+            else if (!validTournScore) { // if invalid tournament score
+                lblStartPlay.setText("Please enter a valid tournament score.");
+            }
+            else { // if all input is valid
+                // determine player mode chosen
+                if (rbtnPlayer.isSelected()) {
+                    pvp = true;
+                }
+                else {
+                    pvc = true;
+                }
+                
+                // switch to play panel
+                pnlStart.setVisible(false);
+                pnlStart2.setVisible(false);
+                pnlPlay.setVisible(true);
             }
         }
     }
