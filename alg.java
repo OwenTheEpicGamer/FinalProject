@@ -95,7 +95,6 @@ public class alg {
                 }
             }
         }
-    }
 
 
     private int[][] returnNeighbours(int row, int column) {
@@ -108,7 +107,7 @@ public class alg {
         for (int i = 0; i < neighbours.size(); i++) {
             int r = neighbours.get(i)[0];
             int c = neighbours.get(i)[1];
-            if (r < SIZE && c < SIZE && r >= 0 && c >= 0)){
+            if (r < SIZE && c < SIZE && r >= 0 && c >= 0){
                 neighbours.remove(i);
                 i--;
             }

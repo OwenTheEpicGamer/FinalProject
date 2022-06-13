@@ -20,16 +20,20 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JButton btnInstructions = new JButton("Instructions");
     JButton btnSettings = new JButton("Settings");
     
-    // play panel components
-    JPanel pnlPlay = new JPanel();
+    // boggle grid panel components
+    JPanel pnlBoggleGrid = new JPanel();
     JButton[][] letters = new JButton[5][5];
     
+    // play actions panel components
+    JPanel pnlPlayActions = new JPanel();
+    
+    // instructions panel components
+    
+    // controls for switching from main to play panel
     boolean pvp = false;
     boolean pvc = false;
     boolean validTournScore = false;
     int tournScore;
-    
-    // instructions panel components
     
     // borders
     Border borderButton = BorderFactory.createCompoundBorder(
@@ -120,7 +124,23 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlStart2.add(btnInstructions);
         pnlStart2.add(Box.createRigidArea(new Dimension(0,10)));
         pnlStart2.add(btnSettings);
+        
+        // set up boggle grid and add to panel in proper format
+        pnlBoggleGrid.setLayout(new GridLayout(5, 5));
+        for (int i = 0; i < letters.length; i++) {
+            for (int j = 0; j < letters[i].length; j++) {
+                letters[i][j] = new JButton("A");
+                letters[i][j].setFont(fontTitle);
+                letters[i][j].setBackground(colourBlue);
+                letters[i][j].setForeground(colourNavy);
+                pnlBoggleGrid.add(letters[i][j]);
+            }
+        }
+        
         add(pnlStart2);
+        add(pnlBoggleGrid);
+        
+        pnlBoggleGrid.setVisible(false);
         setVisible(true);
         
         
@@ -159,7 +179,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 // switch to play panel
                 pnlStart.setVisible(false);
                 pnlStart2.setVisible(false);
-                pnlPlay.setVisible(true);
+                pnlBoggleGrid.setVisible(true);
+                pnlPlayActions.setVisible(true);
             }
         }
     }
