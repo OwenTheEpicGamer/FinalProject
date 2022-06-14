@@ -26,8 +26,26 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // play actions panel components
     JPanel pnlPlayActions = new JPanel();
+    JLabel lblWordEntered = new JLabel("_________");
+    String wordEntered = "";
+    JButton btnEnterWord = new JButton("Enter Word");
+    JButton btnClearWord = new JButton("Clear Word");
+    JButton btnSkip = new JButton("Skip Turn");
+    JButton btnShuffle = new JButton("Shake Up the Board");
+    JLabel lblResult = new JLabel();
+    JLabel lblWhosTurn = new JLabel();
+    
+    // play information panel components
+    JPanel pnlPlayInfo = new JPanel();
+    JButton btnGoBack = new JButton(" <- Back to Main Menu");
+    JLabel lblP1 = new JLabel();
+    JLabel lblP2 = new JLabel();
+    JLabel lblP1Score = new JLabel();
+    JLabel lblP2Score = new JLabel();
     
     // instructions panel components
+    
+    // settings panel components
     
     // controls for switching from main to play panel
     boolean pvp = false;
@@ -41,7 +59,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             BorderFactory.createEmptyBorder(8, 12, 8, 12));
     
     // fonts
-    Font fontTitle = new Font("MS UI Gothic", Font.BOLD, 50);
+    Font fontTitle = new Font("MS UI Gothic", Font.PLAIN, 80);
     Font fontSubtitle = new Font("MS UI Gothic",Font.BOLD, 24);
     Font fontText = new Font("MS UI Gothic",Font.PLAIN, 17);
     
@@ -129,18 +147,39 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlBoggleGrid.setLayout(new GridLayout(5, 5));
         for (int i = 0; i < letters.length; i++) {
             for (int j = 0; j < letters[i].length; j++) {
+                // set format
                 letters[i][j] = new JButton("A");
                 letters[i][j].setFont(fontTitle);
                 letters[i][j].setBackground(colourBlue);
                 letters[i][j].setForeground(colourNavy);
+                
+                // add button to panel
                 pnlBoggleGrid.add(letters[i][j]);
             }
         }
         
+        // set up components for play actions panel
+        lblWordEntered.setFont(fontSubtitle);
+        lblWordEntered.setForeground(colourDarkBlue);
+        lblWordEntered.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblWordEntered.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+        
+        // add components to play actions panel in proper format
+        pnlPlayActions.setLayout(new BoxLayout(pnlPlayActions, BoxLayout.PAGE_AXIS));
+        pnlPlayActions.add(lblWordEntered);
+        pnlPlayActions.add(btnEnterWord);
+        pnlPlayActions.add(btnClearWord);
+        pnlPlayActions.add(btnSkip);
+        pnlPlayActions.add(btnShuffle);
+        pnlPlayActions.add(lblResult);
+        pnlPlayActions.add(lblWhosTurn);
+        
         add(pnlStart2);
         add(pnlBoggleGrid);
+        add(pnlPlayActions);
         
         pnlBoggleGrid.setVisible(false);
+        pnlPlayActions.setVisible(false);
         setVisible(true);
         
         
@@ -177,6 +216,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 }
                 
                 // switch to play panel
+                setLayout(new FlowLayout());
                 pnlStart.setVisible(false);
                 pnlStart2.setVisible(false);
                 pnlBoggleGrid.setVisible(true);
