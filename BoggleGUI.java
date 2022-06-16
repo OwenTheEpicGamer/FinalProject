@@ -145,6 +145,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
         // set up boggle grid and add to panel in proper format
         pnlBoggleGrid.setLayout(new GridLayout(5, 5));
+        pnlBoggleGrid.setBorder(new EmptyBorder(40, 0, 0, 0));
         for (int i = 0; i < letters.length; i++) {
             for (int j = 0; j < letters[i].length; j++) {
                 // set format
@@ -154,24 +155,60 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 letters[i][j].setForeground(colourNavy);
                 
                 // add button to panel
+                letters[i][j].setBorder(new CompoundBorder(BorderFactory.createRaisedBevelBorder(),
+                        BorderFactory.createEmptyBorder(10, 30, 10, 30)));
                 pnlBoggleGrid.add(letters[i][j]);
             }
         }
         
         // set up components for play actions panel
-        lblWordEntered.setFont(fontSubtitle);
+        lblWordEntered.setFont(fontTitle);
         lblWordEntered.setForeground(colourDarkBlue);
         lblWordEntered.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblWordEntered.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+        lblWordEntered.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 100));
+    
+        btnEnterWord.setFont(fontSubtitle);
+        btnEnterWord.setBorder(borderButton);
+        btnEnterWord.setForeground(colourNavy);
+        btnEnterWord.setBackground(colourPeach);
+        btnEnterWord.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnEnterWord.addActionListener(this);
+        
+        btnClearWord.setFont(fontText);
+        btnClearWord.setBorder(borderButton);
+        btnClearWord.setForeground(colourNavy);
+        btnClearWord.setBackground(colourPeach);
+        btnClearWord.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnClearWord.addActionListener(this);
+    
+        btnSkip.setFont(fontText);
+        btnSkip.setBorder(borderButton);
+        btnSkip.setForeground(colourNavy);
+        btnSkip.setBackground(colourPeach);
+        btnSkip.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnSkip.addActionListener(this);
+    
+        btnShuffle.setFont(fontText);
+        btnShuffle.setBorder(borderButton);
+        btnShuffle.setForeground(colourNavy);
+        btnShuffle.setBackground(colourPeach);
+        btnShuffle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnShuffle.addActionListener(this);
         
         // add components to play actions panel in proper format
         pnlPlayActions.setLayout(new BoxLayout(pnlPlayActions, BoxLayout.PAGE_AXIS));
         pnlPlayActions.add(lblWordEntered);
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(100,10)));
         pnlPlayActions.add(btnEnterWord);
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(100,10)));
         pnlPlayActions.add(btnClearWord);
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(100,10)));
         pnlPlayActions.add(btnSkip);
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(100,10)));
         pnlPlayActions.add(btnShuffle);
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(100,10)));
         pnlPlayActions.add(lblResult);
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(100,10)));
         pnlPlayActions.add(lblWhosTurn);
         
         add(pnlStart2);

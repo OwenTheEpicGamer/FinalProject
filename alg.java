@@ -124,7 +124,7 @@ public class alg {
     }
 
     private int addPoints(String word, int pointsCount) {
-        if(word.length() <= 4A) {
+        if(word.length() <= 4) {
             return pointsCount + 1;
         }
         else if(word.length() == 5) {
