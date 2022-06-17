@@ -26,22 +26,22 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // play actions panel components
     JPanel pnlPlayActions = new JPanel();
+    JLabel lblWhosTurn = new JLabel("Player 1's Turn");
     JLabel lblWordEntered = new JLabel("_________");
     String wordEntered = "";
     JButton btnEnterWord = new JButton("Enter Word");
     JButton btnClearWord = new JButton("Clear Word");
     JButton btnSkip = new JButton("Skip Turn");
     JButton btnShuffle = new JButton("Shake Up the Board");
-    JLabel lblResult = new JLabel();
-    JLabel lblWhosTurn = new JLabel();
     
     // play information panel components
     JPanel pnlPlayInfo = new JPanel();
-    JButton btnGoBack = new JButton(" <- Back to Main Menu");
-    JLabel lblP1 = new JLabel();
-    JLabel lblP2 = new JLabel();
-    JLabel lblP1Score = new JLabel();
-    JLabel lblP2Score = new JLabel();
+    JButton btnGoBack = new JButton(" <- Back");
+    JLabel lblResult = new JLabel("1 point earned!");
+    JLabel lblP1 = new JLabel("Player 1");
+    JLabel lblP2 = new JLabel("Player 2");
+    JLabel lblP1Score = new JLabel("0");
+    JLabel lblP2Score = new JLabel("0");
     
     // instructions panel components
     
@@ -194,7 +194,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
         btnShuffle.setBackground(colourPeach);
         btnShuffle.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnShuffle.addActionListener(this);
-        
+    
+        lblWhosTurn.setFont(fontTitle);
+        lblWhosTurn.setForeground(colourDarkBlue);
+        lblWhosTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblWhosTurn.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 100));
+    
         // add components to play actions panel in proper format
         pnlPlayActions.setLayout(new BoxLayout(pnlPlayActions, BoxLayout.PAGE_AXIS));
         pnlPlayActions.add(lblWordEntered);
@@ -210,7 +215,29 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlPlayActions.add(lblResult);
         pnlPlayActions.add(Box.createRigidArea(new Dimension(100,10)));
         pnlPlayActions.add(lblWhosTurn);
+    
+        // set up components for play instructions panel
+        lblP1.setFont(fontSubtitle);
+        lblP1.setForeground(colourDarkBlue);
+        lblP1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblP1.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 100));
+    
+        lblP2.setFont(fontSubtitle);
+        lblP2.setForeground(colourDarkBlue);
+        lblP2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblP2.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 100));
+    
+        lblP1Score.setFont(fontTitle);
+        lblP1Score.setForeground(colourDarkBlue);
+        lblP1Score.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblP1Score.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 100));
         
+        lblP2Score.setFont(fontTitle);
+        lblP2Score.setForeground(colourDarkBlue);
+        lblP2Score.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblP1Score.setBorder(BorderFactory.createEmptyBorder(0, 100, 20, 100));
+    
+    
         add(pnlStart2);
         add(pnlBoggleGrid);
         add(pnlPlayActions);
