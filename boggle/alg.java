@@ -95,7 +95,7 @@ public class alg {
         }
         //System.out.println(word);
         occupied[row][column] = true;
-        if (dict.contains(word) || "mint".equals(word)) {
+        if (dict.contains(word)) {
             wordList.add(word);
         }
 
