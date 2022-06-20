@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class alg {
@@ -21,22 +20,39 @@ public class alg {
         generateDict();
         generateWordlist();
 
-        System.out.println(grid);
-        System.out.println(wordList);
-        System.out.println(wordList.toArray());
-        System.out.println(dict);
-        System.out.println(dict.toArray());
+        for(int r = 0; r < SIZE; r++) {
+            for(int c = 0; c < SIZE; c++) {
+                System.out.print(grid[r][c] + " ");
+            }
+            System.out.println();
+        }
+        Iterator itr = wordList.iterator();
+        while (itr.hasNext()) {
+            System.out.println(itr.next());
+        }
+        Iterator itr2 = dict.iterator();
+        while (itr2.hasNext()) {
+            System.out.println(itr2.next());
+        }
 
     }
 
     private void generateGrid() {
         // makes grid for the first time randomly
-        String[] dice = new String[]{
+        /*String[] dice = new String[]{
                 "AAAFRS", "AAEEEE", "AAFIRS", "ADENNN", "AEEEEM",
                 "AEEGMU", "AEGMNN", "AFIRSY", "BJKQXZ", "CCNSTW",
                 "CEIILT", "CEILPT", "CEIPST", "DDLNOR", "DHHLOR",
                 "DHHNOT", "DHLNOR", "EIIITT", "EMOTTT", "ENSSSU",
                 "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"};
+        */
+        String[] dice = new String[]{
+                "a", "b", "c", "d", "e",
+                "f", "g", "h", "i", "j",
+                "k", "l", "m", "n", "o",
+                "p", "q", "r", "s", "t",
+                "u", "v", "w", "x", "y"};
+
 
         Random rand = new Random();
 
@@ -44,7 +60,7 @@ public class alg {
             for (int column = 0; column < SIZE; column++) {
                 int index = (row * SIZE + column) % dice.length;
                 // index will iterate through dice array and loop back to start when out of bounds
-                int randomInt = rand.nextInt(6);
+                int randomInt = rand.nextInt(dice[0].length());
                 grid[row][column] = dice[index].charAt(randomInt);
             }
         }
@@ -53,13 +69,7 @@ public class alg {
     private void generateDict() {
         dict = new HashSet<String>();
 
-        try {
-            File dictFile = new File("dictionary.txt");
-            Scanner dictReader = new Scanner(dictFile);
-            dict.add(dictReader.nextLine());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private void generateWordlist() {
@@ -73,42 +83,39 @@ public class alg {
 
     }
 
-    private void checkPossibilities(String startLetter, int row, int column) {
-        Deque<String> q = new ArrayDeque<String>();
-        q.addLast(String.valueOf(startLetter));
-
-        while (!q.isEmpty()) {
-            String word = q.pop();
-            if (dict.contains(word)) {
-                wordList.add(word);
-            }
-
-            // 2d array holding coords of all surrounding cells
-            int[][] neighbours = returnNeighbours(row, column);
-
-            for (int[] coord : neighbours) {
-                // next means the value for the next pass
-                int nextRow = coord[0];
-                int nextColumn = coord[1];
-
-                char nextLetter = grid[nextRow][nextColumn];
-                checkPossibilities(word + nextLetter, nextRow, nextColumn);
-                }
-            }
+    private void checkPossibilities(String word, int row, int column) {
+        if (word.length() > 5) {
+            return;
         }
+        System.out.println(word);
+        occupied[row][column] = true;
+        if (dict.contains(word) || "mint".equals(word)) {
+            wordList.add(word);
+        }
+
+        int[][] neighbours = returnNeighbours(row, column);
+        for (int[] coord : neighbours) {
+            int nextRow = coord[0];
+            int nextColumn = coord[1];
+            String newWord = word + grid[nextRow][nextColumn];
+            checkPossibilities(newWord, nextRow, nextColumn);
+        }
+
+        occupied[row][column] = false;
+    }
 
 
     private int[][] returnNeighbours(int row, int column) {
-        ArrayList<int[]> neighbours = (ArrayList<int[]>) Arrays.asList(
+        ArrayList<int[]> neighbours = new ArrayList<int[]>(Arrays.asList(
                 new int[]{row + 1, column}, new int[]{row - 1, column},
                 new int[]{row, column + 1}, new int[]{row, column - 1},
                 new int[]{row + 1, column + 1}, new int[]{row - 1, column - 1},
-                new int[]{row + 1, column - 1}, new int[]{row - 1, column + 1});
+                new int[]{row + 1, column - 1}, new int[]{row - 1, column + 1}));
 
         for (int i = 0; i < neighbours.size(); i++) {
             int r = neighbours.get(i)[0];
             int c = neighbours.get(i)[1];
-            if (r < SIZE && c < SIZE && r >= 0 && c >= 0){
+            if (r >= SIZE || c >= SIZE || r < 0 || c < 0 || occupied[r][c]) {
                 neighbours.remove(i);
                 i--;
             }
@@ -124,19 +131,15 @@ public class alg {
     }
 
     private int addPoints(String word, int pointsCount) {
-        if(word.length() <= 4) {
+        if (word.length() <= 4) {
             return pointsCount + 1;
-        }
-        else if(word.length() == 5) {
+        } else if (word.length() == 5) {
             return pointsCount + 2;
-        }
-        else if(word.length() == 6) {
+        } else if (word.length() == 6) {
             return pointsCount + 3;
-        }
-        else if(word.length() == 7) {
-            return  pointsCount + 5;
-        }
-        else {
+        } else if (word.length() == 7) {
+            return pointsCount + 5;
+        } else {
             return pointsCount + 11;
         }
     }
