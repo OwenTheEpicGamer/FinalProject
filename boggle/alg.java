@@ -1,3 +1,5 @@
+package boggle;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
@@ -123,8 +125,12 @@ public class alg {
         return valid;
     }
 
-    private int addPoints(String word, int pointsCount) {
-        if(word.length() <= 4) {
+    public static int addPoints(String word, int pointsCount) {
+        System.out.println("points are adding");
+        if (word.length() == 0) { // turn is skipped
+           return pointsCount;
+        }
+        else if (word.length() <= 4) {
             return pointsCount + 1;
         }
         else if(word.length() == 5) {
