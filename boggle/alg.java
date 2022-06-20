@@ -126,7 +126,6 @@ public class alg {
     }
 
     public static int addPoints(String word, int pointsCount) {
-        System.out.println("points are adding");
         if (word.length() == 0) { // turn is skipped
            return pointsCount;
         }
