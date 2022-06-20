@@ -1,3 +1,5 @@
+package boggle;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
@@ -6,7 +8,7 @@ import java.awt.event.*;
 public class BoggleGUI extends JFrame implements ActionListener {
     // initialize top main panel components
     JPanel pnlMainTop = new JPanel();
-    JLabel lblBoggleT = new JLabel("ⓑ ⓞ ⓖ ⓖ ⓛ ⓔ");
+    JLabel lblBoggleTitle = new JLabel("ⓑ ⓞ ⓖ ⓖ ⓛ ⓔ");
     JRadioButton rbtnPlayer = new JRadioButton("Player vs. Player  ");
     JRadioButton rbtnComp = new JRadioButton("You vs. Computer");
     ButtonGroup groupMode = new ButtonGroup();
@@ -19,6 +21,17 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JButton btnInstructions = new JButton("Instructions");
     JButton btnSettings = new JButton("Settings");
     
+    // initialize instructions panel components
+    JPanel pnlInstructions = new JPanel();
+    JLabel lblInstructions = new JLabel("ⓘⓝⓢⓣⓡⓤⓒⓣⓘⓞⓝⓢ");
+    JButton btnObjectiveTitle = new JButton("Objectives");
+    JLabel lblObjectiveText = new JLabel();
+    JButton btnGameplayTitle = new JButton("Gameplay");
+    JLabel lblGameplayText = new JLabel();
+    JTextArea lblPointsTable = new JTextArea();
+    
+    // initialize settings panel components
+    
     // initialize boggle grid panel components
     JPanel pnlBoggleGrid = new JPanel();
     JButton[][] letters = new JButton[5][5];
@@ -26,8 +39,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // initialize play actions panel components
     JPanel pnlPlayActions = new JPanel();
-    JLabel lblWhosTurn = new JLabel("PLAYER 1'S TURN");
-    JLabel lblWordEntered = new JLabel("_________");
+    JLabel lblWhosTurn = new JLabel();
+    JLabel lblWordEntered = new JLabel("__ __ __ __ __ __");
     String wordEntered = "";
     JButton btnEnterWord = new JButton("Enter Word");
     JButton btnClearWord = new JButton("Clear Word");
@@ -37,25 +50,21 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // initialize play information panel components
     JPanel pnlPlayScores = new JPanel();
-    JLabel lblP1 = new JLabel("Player 1");
-    JLabel lblP2 = new JLabel("Computer");
+    JLabel lblP1 = new JLabel();
+    JLabel lblP2 = new JLabel();
     JLabel lblP1Score = new JLabel("0");
     JLabel lblP2Score = new JLabel("0");
-    
-    // initialize instructions panel components
-    
-    // initialize settings panel components
+    int pointsP1 = 0;
+    int pointsP2 = 0;
+    int whosTurn;
     
     // initialize back panel components
-    JPanel pnlBackBtn = new JPanel();
     JButton btnBack = new JButton("◀ Back");
     
     // initialize variables to store user configurations
-    boolean pvp = false;
-    boolean pvc = false;
+    boolean multiPlayer = false;
     int tournScore;
     boolean validTournScore = false;
-    
     
     // initialize layouts
     BoxLayout lytMainMenu = new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS);
@@ -69,7 +78,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     Font fontButton = new Font("MS UI Gothic", Font.PLAIN, 80);
     Font fontTitle = new Font("MS UI Gothic", Font.PLAIN, 50);
     Font fontSubtitle = new Font("MS UI Gothic",Font.BOLD, 24);
-    Font fontText = new Font("MS UI Gothic",Font.BOLD, 17);
+    Font fontText = new Font("MS UI Gothic",Font.PLAIN, 17);
     
     // initialize colour rgb codes
     Color colourNavy = new Color(36, 43, 62);
@@ -94,6 +103,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         // setExtendedState(JFrame.MAXIMIZED_BOTH); // set default size as maximized
         
         buildMainMenu(); // build main menu
+        buildInstructionsMenu();
         buildPlayBoard(); // build play board
         
         // set up back button
@@ -103,10 +113,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
         btnBack.setBackground(colourPeach);
         btnBack.setAlignmentY(Component.BOTTOM_ALIGNMENT);
         btnBack.addActionListener(this);
-        pnlBackBtn.setBorder(BorderFactory.createEmptyBorder(620, 0, 20, 0));
-        //pnlBackBtn.add(btnBack);
-        //add(pnlBackBtn);
-        pnlBackBtn.setVisible(false);
         
         setVisible(true);
     }
@@ -114,7 +120,17 @@ public class BoggleGUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object command = e.getSource();
         
-        if (command == btnPlay) {
+        if (command == btnInstructions) {
+            pnlMainTop.setVisible(false);
+            pnlMainBtm.setVisible(false);
+            pnlInstructions.setVisible(true);
+        }
+        else if (command == btnSettings) {
+            pnlMainTop.setVisible(false);
+            pnlMainBtm.setVisible(false);
+            // pnlSettings.setVisible(true);
+        }
+        else if (command == btnPlay) {
             // determine if the tournament score entered is valid
             if (txtTournScore.getText().matches("-?\\d+")) { // if tournament score is an integer
                 tournScore = Integer.parseInt(txtTournScore.getText()); // store value
@@ -137,10 +153,33 @@ public class BoggleGUI extends JFrame implements ActionListener {
             else { // if all input is valid
                 // determine player mode chosen
                 if (rbtnPlayer.isSelected()) {
-                    pvp = true;
+                    lblP1.setText("Player 1");
+                    lblP2.setText("Player 2");
+                    multiPlayer = true; // flag game mode as multiplayer
+                    
+                    // randomly pick first plauer
+                    whosTurn = (int)(Math.random()*2)+1;
+                    if (whosTurn == 1) {
+                        lblWhosTurn.setText("PLAYER 1'S TURN");
+                    }
+                    else {
+                        lblWhosTurn.setText("PLAYER 2'S TURN");
+                    }
+    
                 }
                 else {
-                    pvc = true;
+                    lblP1.setText("You");
+                    lblP2.setText("Computer");
+                    multiPlayer = false; // set game mode as single player
+                    // randomly pick first plauer
+                    whosTurn = (int)(Math.random()*2)+1;
+                    if (whosTurn == 1) {
+                        lblWhosTurn.setText("    YOUR TURN   ");
+                    }
+                    else {
+                        lblWhosTurn.setText("COMPUTER'S TURN");
+                    }
+    
                 }
                 
                 // switch to play panel
@@ -150,31 +189,47 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 addPlayBoard();
             }
         }
-        
-        // switch from current panel to main panel
-        else if (command == btnBack) {
+        else if (command == btnBack) { // switch from current panel to main panel
             // quit current game played
+            pnlPlayScores.setVisible(false);
+            pnlBoggleGrid.setVisible(false);
+            pnlPlayActions.setVisible(false);
             remove(pnlPlayScores);
             remove(pnlBoggleGrid);
             remove(pnlPlayActions);
             
             // hide instructions and settings panels
-    
-            //pnlBackBtn.setVisible(false); // hide back button
+            pnlInstructions.setVisible(false);
+            
+            
             setLayout(lytMainMenu);
             
             // set main manu as visible
             pnlMainTop.setVisible(true);
             pnlMainBtm.setVisible(true);
         }
-        
+        else if (command == btnEnterWord) {
+            switchPlayers();
+            resetWordEntered();
+        }
+        else if (command == btnClearWord) {
+            resetWordEntered();
+        }
+        else if (command == btnSkip) {
+            resetWordEntered();
+            switchPlayers();
+        }
         else {
             rowLoop: // name outer loop
             for (int i = 0; i < letters.length; i++) {
                 for (int j = 0; j < letters[i].length; j++) {
-                    if (command == letters[i][j]) {
+                    if (command == letters[i][j]) { // if the letter is clicked on
+                        wordEntered = wordEntered + boardLetters[i][j]; // add it to the word
+                        
+                        // display on board
+                        lblWordEntered.setText(wordEntered);
                         letters[i][j].setBackground(colourPeach);
-                        wordEntered = wordEntered + boardLetters[i][j];
+                        
                         break rowLoop; // break out of inner and outer for loop
                     }
                 }
@@ -185,10 +240,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
     // set components for main menu and add to frame
     public void buildMainMenu() {
         // set up main panel components
-        lblBoggleT.setFont(new Font("MS UI Gothic", Font.BOLD, 70));
-        lblBoggleT.setForeground(colourDarkBlue);
-        lblBoggleT.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblBoggleT.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
+        lblBoggleTitle.setFont(new Font("MS UI Gothic", Font.BOLD, 70));
+        lblBoggleTitle.setForeground(colourDarkBlue);
+        lblBoggleTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         rbtnPlayer.setFont(fontText);
         rbtnPlayer.setForeground(colourNavy);
@@ -212,7 +266,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblStartPlay.setFont(new Font("MS UI Gothic",Font.ITALIC, 16));
         lblStartPlay.setForeground(colourDarkBlue);
         lblStartPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
-        lblStartPlay.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         
         btnInstructions.setFont(fontText);
         btnInstructions.setBorder(borderButton);
@@ -231,8 +284,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         // add components to first start panel in proper format
         pnlMainTop.setLayout(new BoxLayout(pnlMainTop, BoxLayout.Y_AXIS));
         pnlMainTop.add(Box.createRigidArea(new Dimension(0,230))); // center the elements vertically
-        pnlMainTop.add(lblBoggleT);
-        pnlMainTop.add(Box.createRigidArea(new Dimension(0,15)));
+        pnlMainTop.add(lblBoggleTitle);
+        pnlMainTop.add(Box.createRigidArea(new Dimension(0,35)));
         pnlMainTop.add(rbtnPlayer);
         pnlMainTop.add(rbtnComp);
         pnlMainTop.add(Box.createRigidArea(new Dimension(0,10)));
@@ -251,6 +304,79 @@ public class BoggleGUI extends JFrame implements ActionListener {
         // add main menu panels to frame
         add(pnlMainTop);
         add(pnlMainBtm);
+    }
+    
+    // set components for instructions menu and add to frame
+    public void buildInstructionsMenu() {
+        // set up components for instructions panel
+        lblInstructions.setFont(fontTitle);
+        lblInstructions.setForeground(colourDarkBlue);
+        lblInstructions.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblInstructions.setBorder(new EmptyBorder(0,30, 0, 0));
+        
+        btnObjectiveTitle.setFont(fontSubtitle);
+        btnObjectiveTitle.setBorder(borderButton);
+        btnObjectiveTitle.setForeground(colourDarkBlue);
+        btnObjectiveTitle.setBackground(colourPeach);
+        btnObjectiveTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        lblObjectiveText.setText("<html>Find as many words as possible from a grid of random letters to earn points." +
+                " The first person to reach the Tournament Score wins the game!</html>"); // use html to display line breaks
+        lblObjectiveText.setFont(fontText);
+        lblObjectiveText.setForeground(colourNavy);
+        lblObjectiveText.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        btnGameplayTitle.setFont(fontSubtitle);
+        btnGameplayTitle.setBorder(borderButton);
+        btnGameplayTitle.setForeground(colourDarkBlue);
+        btnGameplayTitle.setBackground(colourBlue);
+        btnGameplayTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        lblGameplayText.setText("<html>Starting from a randomly selected player, take turns forming words by pressing the letters on the Boggle Board. " +
+                "The letters must be connected horizontally, vertically, or diagonally adjacently, and each letter can only be used once. <br/><br/>" +
+                "Every two turns, you will be provided with the option to 'Shake Up The Board', " +
+                "which will generate new, randomized letters on the Boggle Board. <br/><br/>" +
+                "Points will be awarded for any valid word input found within the time limit and in the English dictionary. " +
+                "Proper nouns do not count!</html>");
+        lblGameplayText.setFont(fontText);
+        lblGameplayText.setForeground(colourNavy);
+        lblGameplayText.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        lblPointsTable.setText("""
+                WORD LENGTH            POINTS EARNED
+                1 to 4                           1
+                5                                  2
+                6                                  3
+                7                                  5
+                8+                                11""");
+        lblPointsTable.setFont(fontText);
+        lblPointsTable.setForeground(colourNavy);
+        lblPointsTable.setBounds(100, 300, 100,300);
+        lblPointsTable.setEditable(false);
+        lblPointsTable.setBorder(new CompoundBorder(BorderFactory.createLineBorder(colourDarkBlue),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        lblPointsTable.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        pnlInstructions.setLayout(new BoxLayout(pnlInstructions, BoxLayout.PAGE_AXIS));
+        pnlInstructions.setMaximumSize(new Dimension(700, 700));
+        pnlInstructions.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pnlInstructions.setBorder(new EmptyBorder(30, 0, 30, 0));
+        pnlInstructions.add(lblInstructions);
+        pnlInstructions.add(Box.createRigidArea(new Dimension(0,30)));
+        pnlInstructions.add(btnObjectiveTitle);
+        pnlInstructions.add(Box.createRigidArea(new Dimension(0,15)));
+        pnlInstructions.add(lblObjectiveText);
+        pnlInstructions.add(Box.createRigidArea(new Dimension(0,30)));
+        pnlInstructions.add(btnGameplayTitle);
+        pnlInstructions.add(Box.createRigidArea(new Dimension(0,15)));
+        pnlInstructions.add(lblGameplayText);
+        pnlInstructions.add(Box.createRigidArea(new Dimension(0,20)));
+        pnlInstructions.add(lblPointsTable);
+        pnlInstructions.add(Box.createRigidArea(new Dimension(0,25)));
+        pnlInstructions.add(btnBack);
+        
+        pnlInstructions.setVisible(false);
+        add(pnlInstructions);
     }
     
     // set formatting for play board components
@@ -290,7 +416,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
         // set up play actions panel components
         lblWhosTurn.setFont(fontSubtitle);
-        lblWhosTurn.setForeground(colourDarkBlue);
+        lblWhosTurn.setForeground(colourNavy);
         lblWhosTurn.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblWhosTurn.setBorder(BorderFactory.createEmptyBorder(0, 100, 0, 100));
         
@@ -329,7 +455,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblResult.setFont(fontSubtitle);
         lblResult.setForeground(colourDarkBlue);
         lblResult.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
     }
     
     // add play board components to frame
@@ -338,6 +463,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlPlayScores.removeAll();
         pnlBoggleGrid.removeAll();
         pnlPlayActions.removeAll();
+        pnlPlayScores.setVisible(true);
+        pnlBoggleGrid.setVisible(true);
+        pnlPlayActions.setVisible(true);
         
         setLayout(new BoxLayout(this.getContentPane(), BoxLayout.X_AXIS));
     
@@ -368,23 +496,80 @@ public class BoggleGUI extends JFrame implements ActionListener {
         // add components to play actions panel in proper format
         pnlPlayActions.setLayout(new BoxLayout(pnlPlayActions, BoxLayout.PAGE_AXIS));
         pnlPlayActions.add(lblWhosTurn);
-        pnlPlayActions.add(Box.createRigidArea(new Dimension(40,10)));
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(20,30)));
         pnlPlayActions.add(lblWordEntered);
-        pnlPlayActions.add(Box.createRigidArea(new Dimension(40,30)));
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(20,20)));
         pnlPlayActions.add(btnEnterWord);
-        pnlPlayActions.add(Box.createRigidArea(new Dimension(40,10)));
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(20,10)));
         pnlPlayActions.add(btnClearWord);
-        pnlPlayActions.add(Box.createRigidArea(new Dimension(40,10)));
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(20,10)));
         pnlPlayActions.add(btnSkip);
-        pnlPlayActions.add(Box.createRigidArea(new Dimension(40,10)));
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(20,10)));
         pnlPlayActions.add(btnShuffle);
-        pnlPlayActions.add(Box.createRigidArea(new Dimension(40,30)));
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(20,30)));
         pnlPlayActions.add(lblResult);
         
         // add play board panels to frame
         add(pnlPlayScores);
         add(pnlBoggleGrid);
         add(pnlPlayActions);
+    }
+    
+    // reset the board after a word is entered
+    public void resetWordEntered() {
+        // clear word entered
+        wordEntered = "";
+        lblWordEntered.setText("__ __ __ __ __ __");
+        
+        // reset board
+        for (int i = 0; i < letters.length; i++) {
+            for (int j = 0; j < letters[i].length; j++) {
+                letters[i][j].setBackground(colourBlue);
+            }
+        }
+    }
+    
+    // add points to current player and switch to the next player
+    public void switchPlayers() {
+        System.out.println(wordEntered);
+        
+        if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
+            // calculate and display points earned
+            pointsP1 = alg.addPoints(wordEntered, pointsP1);
+            lblP1Score.setText(Integer.toString(pointsP1));
+            
+            // switch to player 2
+            whosTurn = 2;
+            lblWhosTurn.setText("PLAYER 2'S TURN");
+        }
+        else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
+            // calculate and display points earned
+            pointsP2 = alg.addPoints(wordEntered, pointsP2);
+            lblP2Score.setText(Integer.toString(pointsP2));
+            
+            // switch to player 1
+            whosTurn = 1;
+            lblWhosTurn.setText("PLAYER 1'S TURN");
+        }
+        else if (whosTurn == 1 && !multiPlayer) { // currently single player's turn
+            // calculate and display points earned
+            pointsP1 = alg.addPoints(wordEntered, pointsP1);
+            lblP1Score.setText(Integer.toString(pointsP1));
+    
+            // switch to computer
+            whosTurn = 2;
+            lblWhosTurn.setText("COMPUTER'S TURN");
+        }
+        else { // currently computer's turn
+            // calculate and display points earned
+            pointsP2 = alg.addPoints(wordEntered, pointsP2);
+            lblP2Score.setText(Integer.toString(pointsP2));
+    
+            // switch to the single player
+            whosTurn = 1;
+            lblWhosTurn.setText("    YOUR TURN    ");
+        }
+        
     }
     
     public static void main(String[] args) {
