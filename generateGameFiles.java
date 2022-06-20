@@ -22,6 +22,8 @@ public class generateGameFiles {
         ObjectOutputStream outFile = new ObjectOutputStream(saveFile);
         outFile.writeObject(dict);
         outFile.close();
+        System.out.println(dict.size());
+
     }
 
     public static void makePrefixes() throws IOException {
@@ -32,24 +34,16 @@ public class generateGameFiles {
 
         while (dictReader.hasNext()) {
             String word = dictReader.next();
-            switch (word.length()) {
-                default:
-                case 4:
-                    prefixes.add(word.substring(0, 4));
-                case 3:
-                    prefixes.add(word.substring(0, 3));
-                case 2:
-                    prefixes.add(word.substring(0, 2));
-                case 1:
+            for(int index = 0; index < word.length() && index < 9; index++) {
+                prefixes.add(word.substring(0, index));
             }
         }
-
         FileOutputStream saveFile = new FileOutputStream("prefixesHashSet");
         ObjectOutputStream outFile = new ObjectOutputStream(saveFile);
         outFile.writeObject(prefixes);
         outFile.close();
+        System.out.println(prefixes.size());
     }
-
 
 
 }

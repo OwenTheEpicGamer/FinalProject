@@ -23,6 +23,9 @@ public class alg {
         generateDict();
         openPrefixes();
         generateWordlist();
+        System.out.println("dict size: " + dict.size());
+        System.out.println("wordlist size: " + wordList.size());
+        System.out.println("prefix size: " + prefixes.size());
 
         for (int r = 0; r < SIZE; r++) {
             for (int c = 0; c < SIZE; c++) {
@@ -46,21 +49,20 @@ public class alg {
 
     private void generateGrid() {
         // makes grid for the first time randomly
-        String[] dice = new String[]{
-                "s", "e", "s", "n", "m",
-                "u", "n", "y", "z", "w",
-                "t", "t", "t", "r", "r",
-                "t", "r", "t", "t", "u",
-                "y", "w", "y", "w", "u"};
+        ArrayList<String> dice = new ArrayList<String>(List.of(
+                "aaafrs", "aaeeee", "aafirs", "adennn", "aeeeem",
+                "aeegmu", "aegmnn", "afirsy", "bjkqxz", "ccnstw",
+                "ceiilt", "ceilpt", "ceipst", "ddlnor", "dhhlor",
+                "dhhnot", "dhlnor", "eiiitt", "emottt", "ensssu",
+                "fiprsy", "gorrvw", "hiprry", "nootuw", "ooottu"));
 
         Random rand = new Random();
 
         for (int row = 0; row < SIZE; row++) {
             for (int column = 0; column < SIZE; column++) {
-                int index = (row * SIZE + column) % dice.length;
-                // index will iterate through dice array and loop back to start when out of bounds
-                int randomInt = rand.nextInt(dice[0].length());
-                grid[row][column] = dice[index].charAt(randomInt);
+                int randomLetter = rand.nextInt(6);
+                int randomDice = rand.nextInt(dice.size());
+                grid[row][column] = dice.get(randomDice).charAt(randomLetter);
             }
         }
     }
@@ -105,12 +107,12 @@ public class alg {
     }
 
     private void checkPossibilities(String word, int row, int column) {
-        if (word.length() > MAX_WORD_SIZE) {
+        if (word.length() > 17) {
             return;
         }
-        /*if (word.length() <= 4 && word.length() > 1 && !prefixes.contains(word)) {
+        if (word.length() <= 6 && word.length() > 1 && !prefixes.contains(word)) {
             return;
-        }*/
+        }
 
         //System.out.println(word);
         occupied[row][column] = true;
