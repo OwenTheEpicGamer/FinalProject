@@ -467,7 +467,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         sldrMinWordLength.setPaintTicks(true);
         sldrMinWordLength.setPaintLabels(true);
         
-        pnlSettings.setLayout(lytBoxPage);
+        pnlSettings.setLayout(new BoxLayout(pnlSettings, BoxLayout.PAGE_AXIS));
         pnlSettings.add(lblSettings);
         pnlSettings.add(chkSound);
         pnlSettings.add(chkTimed);
