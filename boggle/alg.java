@@ -90,12 +90,12 @@ public class alg {
     }
 
     private void checkPossibilities(String word, int row, int column) {
-        if (word.length() >= MAX_WORD_SIZE) {
+        if (word.length() > MAX_WORD_SIZE) {
             return;
         }
         //System.out.println(word);
         occupied[row][column] = true;
-        if (dict.contains(word) || "mint".equals(word)) {
+        if (dict.contains(word)) {
             wordList.add(word);
         }
 
