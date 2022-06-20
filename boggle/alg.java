@@ -1,9 +1,11 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+package boggle;
+
+import java.io.*;
 import java.util.*;
 
 public class alg {
     private final int SIZE;
+    private final int MAX_WORD_SIZE = 8;
     private boolean[][] occupied;
     private char[][] grid;
     private Set<String> dict;
@@ -20,39 +22,34 @@ public class alg {
         generateDict();
         generateWordlist();
 
-        for(int r = 0; r < SIZE; r++) {
-            for(int c = 0; c < SIZE; c++) {
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
                 System.out.print(grid[r][c] + " ");
             }
             System.out.println();
         }
-        Iterator itr = wordList.iterator();
-        while (itr.hasNext()) {
-            System.out.println(itr.next());
-        }
-        Iterator itr2 = dict.iterator();
-        while (itr2.hasNext()) {
-            System.out.println(itr2.next());
+
+        //System.out.println("ENTIRE DICTIONARY");
+        //printSet(dict);
+        System.out.println("ALL POSSIBLE WORDS");
+        printSet(wordList);
+    }
+
+    private void printSet(Set<String> set) {
+        for (String s : set) {
+            System.out.println(s);
         }
 
     }
 
     private void generateGrid() {
         // makes grid for the first time randomly
-        /*String[] dice = new String[]{
-                "AAAFRS", "AAEEEE", "AAFIRS", "ADENNN", "AEEEEM",
-                "AEEGMU", "AEGMNN", "AFIRSY", "BJKQXZ", "CCNSTW",
-                "CEIILT", "CEILPT", "CEIPST", "DDLNOR", "DHHLOR",
-                "DHHNOT", "DHLNOR", "EIIITT", "EMOTTT", "ENSSSU",
-                "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"};
-        */
         String[] dice = new String[]{
-                "a", "b", "c", "d", "e",
-                "f", "g", "h", "i", "j",
-                "k", "l", "m", "n", "o",
-                "p", "q", "r", "s", "t",
-                "u", "v", "w", "x", "y"};
-
+                "aaafrs", "aaeeee", "aafirs", "adennn", "aeeeem",
+                "aeegmu", "aegmnn", "afirsy", "bjkqxz", "ccnstw",
+                "ceiilt", "ceilpt", "ceipst", "ddlnor", "dhhlor",
+                "dhhnot", "dhlnor", "eiiitt", "emottt", "ensssu",
+                "fiprsy", "gorrvw", "hiprry", "nootuw", "ooottu"};
 
         Random rand = new Random();
 
@@ -67,9 +64,18 @@ public class alg {
     }
 
     private void generateDict() {
-        dict = new HashSet<String>();
+        //dict = new HashSet<String>();
+        try {
+            FileInputStream readFile = new FileInputStream("dictHashSet");
+            ObjectInputStream fileInputStream = new ObjectInputStream(readFile);
 
+            dict = (HashSet<String>) fileInputStream.readObject();
 
+            fileInputStream.close();
+            readFile.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.getStackTrace();
+        }
     }
 
     private void generateWordlist() {
@@ -84,10 +90,10 @@ public class alg {
     }
 
     private void checkPossibilities(String word, int row, int column) {
-        if (word.length() > 5) {
+        if (word.length() >= MAX_WORD_SIZE) {
             return;
         }
-        System.out.println(word);
+        //System.out.println(word);
         occupied[row][column] = true;
         if (dict.contains(word) || "mint".equals(word)) {
             wordList.add(word);

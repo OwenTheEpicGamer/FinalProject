@@ -1,4 +1,4 @@
-package boggle;
+/* package boggle;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -582,3 +582,4 @@ public class BoggleGUI extends JFrame implements ActionListener {
         BoggleGUI myBoggle = new BoggleGUI(letters);
     }
 }
+*/
