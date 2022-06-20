@@ -10,6 +10,6 @@ public class DictSerializer {
         Scanner dictReader = new Scanner(dictFile);
         dict.add(dictReader.nextLine());
 
-        
+
     }
 }
