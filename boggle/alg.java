@@ -5,10 +5,11 @@ import java.util.*;
 
 public class alg {
     private final int SIZE;
-    private final int MAX_WORD_SIZE = 8;
+    private final int MAX_WORD_SIZE = 11;
     private boolean[][] occupied;
     private char[][] grid;
     private Set<String> dict;
+    private Set<String> prefixes;
     private Set<String> wordList;
     private int player1Points;
     private int minimumLength;
@@ -20,6 +21,7 @@ public class alg {
         grid = new char[SIZE][SIZE];
         generateGrid();
         generateDict();
+        openPrefixes();
         generateWordlist();
 
         for (int r = 0; r < SIZE; r++) {
@@ -45,11 +47,11 @@ public class alg {
     private void generateGrid() {
         // makes grid for the first time randomly
         String[] dice = new String[]{
-                "aaafrs", "aaeeee", "aafirs", "adennn", "aeeeem",
-                "aeegmu", "aegmnn", "afirsy", "bjkqxz", "ccnstw",
-                "ceiilt", "ceilpt", "ceipst", "ddlnor", "dhhlor",
-                "dhhnot", "dhlnor", "eiiitt", "emottt", "ensssu",
-                "fiprsy", "gorrvw", "hiprry", "nootuw", "ooottu"};
+                "s", "e", "s", "n", "m",
+                "u", "n", "y", "z", "w",
+                "t", "t", "t", "r", "r",
+                "t", "r", "t", "t", "u",
+                "y", "w", "y", "w", "u"};
 
         Random rand = new Random();
 
@@ -78,6 +80,20 @@ public class alg {
         }
     }
 
+    private void openPrefixes() {
+        try {
+            FileInputStream readFile = new FileInputStream("prefixesHashSet");
+            ObjectInputStream fileInputStream = new ObjectInputStream(readFile);
+
+            prefixes = (HashSet<String>) fileInputStream.readObject();
+
+            fileInputStream.close();
+            readFile.close();
+        } catch (IOException | ClassNotFoundException e) {
+            e.getStackTrace();
+        }
+    }
+
     private void generateWordlist() {
         wordList = new HashSet<String>();
         for (int row = 0; row < SIZE; row++) {
@@ -86,13 +102,16 @@ public class alg {
                 checkPossibilities(startLetter, row, column);
             }
         }
-
     }
 
     private void checkPossibilities(String word, int row, int column) {
         if (word.length() > MAX_WORD_SIZE) {
             return;
         }
+        /*if (word.length() <= 4 && word.length() > 1 && !prefixes.contains(word)) {
+            return;
+        }*/
+
         //System.out.println(word);
         occupied[row][column] = true;
         if (dict.contains(word)) {
@@ -135,7 +154,7 @@ public class alg {
         }
         return valid;
     }
-    
+
     public static int addPoints(String word, int pointsCount) {
         if (word.length() <= 4) {
             return pointsCount + 1;
