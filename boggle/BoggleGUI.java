@@ -35,16 +35,20 @@ public class BoggleGUI extends JFrame implements ActionListener {
     // initialize settings panel components
     JPanel pnlSettings = new JPanel();
     JLabel lblSettings = new JLabel("ⓢⓔⓣⓣⓘⓝⓖⓢ");
-    JCheckBox chkSound = new JCheckBox("Sound effects");
-    JCheckBox chkTimed = new JCheckBox("Play timed");
-    JLabel lblTimed = new JLabel("Set time limit (seconds)");
+    JCheckBox chkSound = new JCheckBox("Sound effects", true);
+    JCheckBox chkMusic = new JCheckBox("Music", true);
+    JLabel lblMusic = new JLabel("Set the genre:");
+    JSlider sldrMusic = new JSlider(0, 2, 0);
+    Hashtable<Integer, JLabel> hashLblMusic = new Hashtable<Integer, JLabel>();
+    JCheckBox chkTimed = new JCheckBox("Play timed", true);
+    JLabel lblTimed = new JLabel("Set time limit (seconds):");
     JSlider sldrTimed = new JSlider(10, 60, 15);
-    JLabel lblDifficulty = new JLabel("Computer Difficulty");
-    JSlider sldrDifficulty = new JSlider(1, 3, 1);
+    JLabel lblDifficulty = new JLabel("Set computer difficulty:");
+    JSlider sldrDifficulty = new JSlider(0, 2, 0);
     Hashtable<Integer, JLabel> hashLblDifficulty = new Hashtable<Integer, JLabel>();
-    JLabel lblminWordLength = new JLabel("Minimum Word Length");
+    JLabel lblminWordLength = new JLabel("Set minimum word length:");
     JSlider sldrMinWordLength = new JSlider(1, 4, 3);
-    JButton btnSave = new JButton("Save");
+    JButton btnSave = new JButton("Save and Exit");
     
     // initialize boggle grid panel components
     JPanel pnlBoggleGrid = new JPanel();
@@ -55,7 +59,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JPanel pnlPlayActions = new JPanel();
     JLabel lblWhosTurn = new JLabel();
     JLabel lblWordEntered = new JLabel("__ __ __ __ __ __");
-    String wordEntered = "";
+    String wordEntered = ""; // stores the word entered
     JButton btnEnterWord = new JButton("Enter Word");
     JButton btnClearWord = new JButton("Clear Word");
     JButton btnSkip = new JButton("Skip Turn");
@@ -69,16 +73,20 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JLabel lblP1Score = new JLabel("0");
     JLabel lblP2Score = new JLabel("0");
     JButton btnQuit = new JButton("◀ Quit");
-    int pointsP1 = 0;
-    int pointsP2 = 0;
-    int whosTurn;
-    
-    // initialize back panel components
+    int pointsP1 = 0; // points of player 1
+    int pointsP2 = 0; // points of player 2
+    int whosTurn; // stores the value of the current player (1 for player 1, 2 for player 2)
     
     // initialize variables to store user configurations
     boolean multiPlayer = false;
     int tournScore;
     boolean validTournScore = false;
+    boolean soundEffects = true;
+    boolean music = true;
+    int musicGenre = 0;
+    boolean playTimed = true;
+    int timeLimit = 15;
+    
     
     // initialize layouts
     BoxLayout lytBoxPage = new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS);
@@ -96,7 +104,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // initialize colour rgb codes
     Color colourNavy = new Color(36, 43, 62);
-    Color colourDarkBlue = new Color(21, 72, 120);
+    Color colourDarkBlue = new Color(13, 72, 128);
     Color colourPeach = new Color(252, 209, 154);
     Color colourBlue = new Color(166, 217, 241);
     
@@ -126,16 +134,16 @@ public class BoggleGUI extends JFrame implements ActionListener {
     }
     
     public void actionPerformed(ActionEvent e) {
-        Object command = e.getSource();
+        Object source = e.getSource();
         
         // switch from main to instructions panel
-        if (command == btnInstructions) {
+        if (source == btnInstructions) {
             pnlMainTop.setVisible(false);
             pnlMainBtm.setVisible(false);
             pnlInstructions.setVisible(true);
         }
         // switch from instructions panel to main panel
-        else if (command == btnBack) {
+        else if (source == btnBack) {
             // hide instructions panel
             pnlInstructions.setVisible(false);
     
@@ -144,13 +152,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
             pnlMainBtm.setVisible(true);
         }
         // switch from main to settings panel
-        else if (command == btnSettings) {
+        else if (source == btnSettings) {
             pnlMainTop.setVisible(false);
             pnlMainBtm.setVisible(false);
             pnlSettings.setVisible(true);
         }
         // switch from settings panel to main panel
-        else if (command == btnSave) {
+        else if (source == btnSave) {
             // hide settings panel
             pnlSettings.setVisible(false);
     
@@ -158,8 +166,30 @@ public class BoggleGUI extends JFrame implements ActionListener {
             pnlMainTop.setVisible(true);
             pnlMainBtm.setVisible(true);
         }
+        // if state of music check box in settings is changed
+        else if (source == chkMusic) {
+            if (chkMusic.isSelected()) {
+                lblMusic.setVisible(true);
+                sldrMusic.setVisible(true);
+            }
+            else {
+                lblMusic.setVisible(false);
+                sldrMusic.setVisible(false);
+            }
+        }
+        // if state of timer check box in settings is changed
+        else if (source == chkTimed) {
+            if (chkTimed.isSelected()) {
+                lblTimed.setVisible(true);
+                sldrTimed.setVisible(true);
+            }
+            else {
+                lblTimed.setVisible(false);
+                sldrTimed.setVisible(false);
+            }
+        }
         // switch from main to play panel
-        else if (command == btnPlay) {
+        else if (source == btnPlay) {
             // determine if the tournament score entered is valid
             if (txtTournScore.getText().matches("-?\\d+")) { // if tournament score is an integer
                 tournScore = Integer.parseInt(txtTournScore.getText()); // store value
@@ -220,7 +250,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
         }
         // switch from play panel to main panel
-        else if (command == btnQuit) {
+        else if (source == btnQuit) {
             // quit current game played
             pnlPlayScores.setVisible(false);
             pnlBoggleGrid.setVisible(false);
@@ -236,16 +266,16 @@ public class BoggleGUI extends JFrame implements ActionListener {
             pnlMainBtm.setVisible(true);
         }
         // if user wants to enter a word on play board
-        else if (command == btnEnterWord) {
+        else if (source == btnEnterWord) {
             switchPlayers();
             resetWordEntered();
         }
         // if used wants to clear the word on play board
-        else if (command == btnClearWord) {
+        else if (source == btnClearWord) {
             resetWordEntered();
         }
         // if user wants to skip their turn
-        else if (command == btnSkip) {
+        else if (source == btnSkip) {
             resetWordEntered();
             switchPlayers();
         }
@@ -254,7 +284,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             rowLoop: // name outer loop
             for (int i = 0; i < letters.length; i++) {
                 for (int j = 0; j < letters[i].length; j++) {
-                    if (command == letters[i][j]) { // if the letter is clicked on
+                    if (source == letters[i][j]) { // if the letter is clicked on
                         wordEntered = wordEntered + boardLetters[i][j]; // add it to the word
                         
                         // display on board
@@ -423,61 +453,116 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblSettings.setFont(fontTitle);
         lblSettings.setForeground(colourDarkBlue);
         lblSettings.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblSettings.setBorder(new EmptyBorder(0,60, 0, 0));
-    
+        lblSettings.setBorder(new EmptyBorder(0,10, 0, 0));
+        
         chkSound.setFont(fontSubtitle);
-        chkSound.setBorder(borderButton);
         chkSound.setForeground(colourDarkBlue);
-        chkSound.setBackground(colourBlue);
         chkSound.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        chkMusic.setFont(fontSubtitle);
+        chkMusic.setForeground(colourDarkBlue);
+        chkMusic.setAlignmentX(Component.LEFT_ALIGNMENT);
+        chkMusic.addActionListener(this);
     
+        lblMusic.setFont(fontText);
+        lblMusic.setForeground(colourNavy);
+        lblMusic.setAlignmentX(Component.LEFT_ALIGNMENT);
+    
+        // set up music genre slider labels and add to hashtable
+        JLabel[] lblGenres = new JLabel[3];
+        lblGenres[0] = new JLabel("Classical");
+        lblGenres[1] = new JLabel("Electronic");
+        lblGenres[2] = new JLabel("Lo-fi");
+        for (int i = 0; i < lblGenres.length; i++) {
+            lblGenres[i].setFont(fontText);
+            hashLblMusic.put(i, lblGenres[i]);
+        }
+        
+        sldrMusic.setBorder(new EmptyBorder(5, 0, 20,0));
+        sldrMusic.setMajorTickSpacing(1);
+        sldrMusic.setFont(fontText);
+        sldrMusic.setPaintTicks(true);
+        sldrMusic.setLabelTable(hashLblMusic);
+        sldrMusic.setPaintLabels(true);
+        
         chkTimed.setFont(fontSubtitle);
-        chkTimed.setBorder(borderButton);
         chkTimed.setForeground(colourDarkBlue);
-        chkTimed.setBackground(colourBlue);
         chkTimed.setAlignmentX(Component.LEFT_ALIGNMENT);
+        chkTimed.addActionListener(this);
     
         lblTimed.setFont(fontText);
         lblTimed.setForeground(colourNavy);
         lblTimed.setAlignmentX(Component.LEFT_ALIGNMENT);
     
+        sldrTimed.setBorder(new EmptyBorder(5, 0, 20,0));
         sldrTimed.setMajorTickSpacing(10);
-        sldrTimed.setMinorTickSpacing(2);
+        sldrTimed.setMinorTickSpacing(1);
+        sldrTimed.setFont(fontText);
         sldrTimed.setPaintTicks(true);
         sldrTimed.setPaintLabels(true);
     
-        lblDifficulty.setFont(fontText);
-        lblDifficulty.setForeground(colourNavy);
+        lblDifficulty.setFont(fontSubtitle);
+        lblDifficulty.setForeground(colourDarkBlue);
         lblDifficulty.setAlignmentX(Component.LEFT_ALIGNMENT);
     
+        // set up difficulty slider labels and add to hashtable
+        JLabel[] lblDifficulties = new JLabel[3];
+        lblDifficulties[0] = new JLabel("Easy");
+        lblDifficulties[1] = new JLabel("Medium");
+        lblDifficulties[2] = new JLabel("Hard");
+        for (int i = 0; i < lblDifficulties.length; i++) {
+            lblDifficulties[i].setFont(fontText);
+            hashLblDifficulty.put(i, lblDifficulties[i]);
+        }
+    
         sldrDifficulty.setMajorTickSpacing(1);
+        sldrDifficulty.setFont(fontText);
         sldrDifficulty.setPaintTicks(true);
-        
-        hashLblDifficulty.put(1, new JLabel("Easy") );
-        hashLblDifficulty.put(2, new JLabel("Medium") );
-        hashLblDifficulty.put(3, new JLabel("Hard") );
         sldrDifficulty.setLabelTable(hashLblDifficulty);
         sldrDifficulty.setPaintLabels(true);
     
-        lblminWordLength.setFont(fontText);
-        lblminWordLength.setForeground(colourNavy);
+        lblminWordLength.setFont(fontSubtitle);
+        lblminWordLength.setForeground(colourDarkBlue);
         lblminWordLength.setAlignmentX(Component.LEFT_ALIGNMENT);
     
         sldrMinWordLength.setMajorTickSpacing(1);
+        sldrMinWordLength.setFont(fontText);
         sldrMinWordLength.setPaintTicks(true);
         sldrMinWordLength.setPaintLabels(true);
+    
+        btnSave.setFont(fontText);
+        btnSave.setBorder(borderButton);
+        btnSave.setForeground(colourNavy);
+        btnSave.setBackground(colourPeach);
+        btnSave.addActionListener(this);
         
         pnlSettings.setLayout(new BoxLayout(pnlSettings, BoxLayout.PAGE_AXIS));
+        pnlSettings.setMaximumSize(new Dimension(430, 700));
+        pnlSettings.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pnlSettings.setBorder(new EmptyBorder(30, 0, 30, 0));
         pnlSettings.add(lblSettings);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 20)));
         pnlSettings.add(chkSound);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlSettings.add(chkMusic);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 7)));
+        pnlSettings.add(lblMusic);
+        pnlSettings.add(sldrMusic);
         pnlSettings.add(chkTimed);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 7)));
         pnlSettings.add(lblTimed);
         pnlSettings.add(sldrTimed);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 20)));
         pnlSettings.add(lblDifficulty);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 5)));
         pnlSettings.add(sldrDifficulty);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 30)));
         pnlSettings.add(lblminWordLength);
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 5)));
         pnlSettings.add(sldrMinWordLength);
-        
+        pnlSettings.add(Box.createRigidArea(new Dimension(0, 30)));
+        pnlSettings.add(btnSave);
+    
         pnlSettings.setVisible(false);
         add(pnlSettings);
     }
