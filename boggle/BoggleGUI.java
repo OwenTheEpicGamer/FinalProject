@@ -1,4 +1,4 @@
-/* package boggle;
+package boggle;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -419,15 +419,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // set components for settings menu and add to frame
     public void buildSettingsMenu() {
-        /*
-         * JPanel pnlSettings = new JPanel();
-    JLabel lblDifficulty = new JLabel("Computer Difficulty");
-    JSlider sldrDifficulty = new JSlider(1, 3, 1);
-    Hashtable hashLblDifficulty = new Hashtable();
-    JLabel lblminWordLength = new JLabel("Minimum Word Length");
-    JSlider sldrMinWordLength = new JSlider(1, 4, 3);
-    JButton btnSave = new JButton("Save");
-         */
+
         lblSettings.setFont(fontTitle);
         lblSettings.setForeground(colourDarkBlue);
         lblSettings.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -474,6 +466,20 @@ public class BoggleGUI extends JFrame implements ActionListener {
         sldrMinWordLength.setMajorTickSpacing(1);
         sldrMinWordLength.setPaintTicks(true);
         sldrMinWordLength.setPaintLabels(true);
+        
+        pnlSettings.setLayout(lytBoxPage);
+        pnlSettings.add(lblSettings);
+        pnlSettings.add(chkSound);
+        pnlSettings.add(chkTimed);
+        pnlSettings.add(lblTimed);
+        pnlSettings.add(sldrTimed);
+        pnlSettings.add(lblDifficulty);
+        pnlSettings.add(sldrDifficulty);
+        pnlSettings.add(lblminWordLength);
+        pnlSettings.add(sldrMinWordLength);
+        
+        pnlSettings.setVisible(false);
+        add(pnlSettings);
     }
     
     // set formatting for play board components
@@ -691,4 +697,3 @@ public class BoggleGUI extends JFrame implements ActionListener {
         BoggleGUI myBoggle = new BoggleGUI(letters);
     }
 }
-*/

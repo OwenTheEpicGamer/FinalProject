@@ -135,8 +135,8 @@ public class alg {
         }
         return valid;
     }
-
-    private int addPoints(String word, int pointsCount) {
+    
+    public static int addPoints(String word, int pointsCount) {
         if (word.length() <= 4) {
             return pointsCount + 1;
         } else if (word.length() == 5) {
@@ -149,7 +149,6 @@ public class alg {
             return pointsCount + 11;
         }
     }
-
 }
 
 
