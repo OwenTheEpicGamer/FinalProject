@@ -42,7 +42,7 @@ public class generateGameFiles {
         ObjectOutputStream outFile = new ObjectOutputStream(saveFile);
         outFile.writeObject(prefixes);
         outFile.close();
-        System.out.println(prefixes.size());
+        System.out.println("size of prefixes: " + prefixes.size());
     }
 
 
