@@ -173,6 +173,11 @@ public class alg {
             return pointsCount + 11;
         }
     }
+    
+    // determines if word entered is in the set of valid words
+    public boolean isValidWord(String word) {
+        return wordList.contains(word);
+    }
 }
 
 

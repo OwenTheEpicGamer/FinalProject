@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
+import boggle.alg.*;
 
 public class BoggleGUI extends JFrame implements ActionListener {
     // initialize top main panel components
@@ -62,6 +63,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JLabel lblWhosTurn = new JLabel();
     JLabel lblWordEntered = new JLabel("__ __ __ __ __ __");
     String wordEntered = ""; // stores the word entered
+    boolean isValidWord;
     JButton btnEnterWord = new JButton("Enter Word");
     JButton btnClearWord = new JButton("Clear Word");
     JButton btnSkip = new JButton("Skip Turn");
@@ -286,6 +288,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
+            isValidWord = wordList.contains(wordEntered);
             switchPlayers();
             resetWordEntered();
         }
