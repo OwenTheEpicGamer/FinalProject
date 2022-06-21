@@ -172,6 +172,31 @@ public class alg {
         }
     }
     
+    public String computerGetsWord(int d) {
+        String easy = "aaaaaaaaaaaaaaaa";
+        String med = "a";
+        String hard = "a";
+        
+        for (String s : wordList) {
+            if (d == 3 && s.length() > hard.length()) {
+                hard = s;
+            }
+            if (d == 1 && s.length() < easy.length()) {
+                easy = s;
+            }
+            if (d == 4 && (s.length() == 4 || s.length() == 3 || s.length() == 5)) {
+                med = s;
+            }
+        }
+        return switch (d) {
+            case 1 -> easy;
+            case 2 -> med;
+            case 3 -> hard;
+            default -> "nothing";
+        };
+        
+    }
+    
     // get word list
     public Set<String> getWordList() {
         return wordList;
