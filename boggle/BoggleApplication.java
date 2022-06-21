@@ -439,7 +439,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
             // set up confirmation to quit the game after it ends
             if (isWinner) {
                 if (whosTurn == 1 && multiPlayer) {
-                    lblConfirm.setText("[" + pointsP1 + " vs. " + pointsP2 + "]");
+                    lblConfirm.setText("Player 1 wins! [" + pointsP1 + " vs. " + pointsP2 + "]");
                 }
                 else if (whosTurn == 2 && multiPlayer) {
                     lblConfirm.setText("Player 2 wins! [" + pointsP1 + " vs. " + pointsP2 + "]");
@@ -1278,63 +1278,84 @@ public class BoggleApplication extends JFrame implements ActionListener {
     // add points to current player and switch to the next player's turn
     public void switchPlayers() {
         pointsEarned = algorithm.pointsEarned(wordEntered); // store points earned for the word
+        System.out.println(tournScore);
         
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
             pointsP1 += pointsEarned; // add points
     
             // see if there is a winner
-            if (pointsEarned + pointsP1 >= tournScore) {
+            if (pointsP1 >= tournScore) {
                 isWinner = true;
             }
             // display points earned
             else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1));
                 lblResult.setText(pointsEarned + " point(s) earned!");
+    
+                // switch to player 2
+                whosTurn = 2;
+                lblWhosTurn.setText("PLAYER 2'S TURN");
+            }
+            else {
+                // switch to player 2
+                whosTurn = 2;
+                lblWhosTurn.setText("PLAYER 2'S TURN");
             }
             
-            // switch to player 2
-            whosTurn = 2;
-            lblWhosTurn.setText("PLAYER 2'S TURN");
         }
         else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
             pointsP2 += pointsEarned; // add points
     
             // see if there is a winner
-            if (pointsEarned + pointsP2 >= tournScore) {
+            if (pointsP2 >= tournScore) {
                 isWinner = true;
             }
             // display points earned
             else if (pointsEarned != 0) {
                 lblP2Score.setText(Integer.toString(pointsP2));
                 lblResult.setText(pointsEarned + " point(s) earned!");
+    
+                // switch to player 1
+                whosTurn = 1;
+                lblWhosTurn.setText("PLAYER 1'S TURN");
+            }
+            else {
+                // switch to player 1
+                whosTurn = 1;
+                lblWhosTurn.setText("PLAYER 1'S TURN");
             }
             
-            // switch to player 1
-            whosTurn = 1;
-            lblWhosTurn.setText("PLAYER 1'S TURN");
         }
         else if (whosTurn == 1) { // currently single player's turn
             pointsP1 += pointsEarned; // add points
     
             // see if there is a winner
-            if (pointsEarned + pointsP2 >= tournScore) {
+            if (pointsP1 >= tournScore) {
                 isWinner = true;
             }
             // display points earned
-            else if (pointsEarned != 0) {
+            else if (pointsEarned != 0) { // user earned points
                 lblP1Score.setText(Integer.toString(pointsP1));
                 lblResult.setText(pointsEarned + " point(s) earned!");
+    
+                // switch to computer
+                whosTurn = 2;
+                lblWhosTurn.setText("COMPUTER'S  TURN");
+                compTurn(); // run computer's move
             }
-            // switch to computer
-            whosTurn = 2;
-            lblWhosTurn.setText("COMPUTER'S  TURN");
-            compTurn(); // run computer's move
+            else { // user did not earn points
+                // switch to computer
+                whosTurn = 2;
+                lblWhosTurn.setText("COMPUTER'S  TURN");
+                compTurn(); // run computer's move
+            }
+
         }
         else { // currently computer's turn
             pointsP2 += pointsEarned; // add points
     
             // see if there is a winner
-            if (pointsEarned + pointsP2 >= tournScore) {
+            if (pointsP2 >= tournScore) {
                 isWinner = true;
             }
             // display points earned
@@ -1342,10 +1363,16 @@ public class BoggleApplication extends JFrame implements ActionListener {
                 lblP2Score.setText(Integer.toString(pointsP2));
                 lblResult.setText("Computer earned " + pointsEarned + " point(s)!");
                 lblWordSumbitted.setText("Played word " + wordEntered);
+    
+                // switch to the single player
+                whosTurn = 1;
+                lblWhosTurn.setText("    YOUR TURN    ");
             }
-            // switch to the single player
-            whosTurn = 1;
-            lblWhosTurn.setText("    YOUR TURN    ");
+            else {
+                // switch to the single player
+                whosTurn = 1;
+                lblWhosTurn.setText("    YOUR TURN    ");
+            }
         }
         
     }
