@@ -1041,10 +1041,10 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlPlayActions.add(lblResult);
         
         // add components to play buffer panel in proper format
-        pnlPlayBuffer.setLayout(new BoxLayout(pnlPlayActions, BoxLayout.PAGE_AXIS));
+        /* pnlPlayBuffer.setLayout(new BoxLayout(pnlPlayActions, BoxLayout.PAGE_AXIS));
         pnlPlayBuffer.add(lblConfirm);
         pnlPlayBuffer.add(btnContinue);
-        pnlPlayBuffer.add(lblConfirm);
+        pnlPlayBuffer.add(lblConfirm);*/
         
         // add play board panels to frame
         add(pnlPlayScores);
@@ -1077,7 +1077,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                pointsP1 += pointsEarned;
+                lblP1Score.setText(Integer.toString(pointsP1));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
                 // switch to player 2
@@ -1092,7 +1093,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                pointsP2 += pointsEarned;
+                lblP2Score.setText(Integer.toString(pointsP2));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
                 // switch to player 1
@@ -1107,7 +1109,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                pointsP1 += pointsEarned;
+                lblP1Score.setText(Integer.toString(pointsP1));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
                 // switch to computer
@@ -1123,7 +1126,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                pointsP2 += pointsEarned;
+                lblP2Score.setText(Integer.toString(pointsP2));
                 lblResult.setText("Computer played " + wordEntered + ", point(s) earned: " + pointsEarned);
     
                 // switch to the single player
