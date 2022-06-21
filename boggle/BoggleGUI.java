@@ -937,7 +937,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         // generate random board of characters
         algorithm.generateGrid(boardLetters, 5);
         
-        algorithm.generateWordlist(boardLetters, 5); // generate wordlist for new board
+        algorithm.generateWordlist(boardLetters); // generate wordlist for new board
         
         pnlPlayScores.setVisible(true);
         pnlBoggleGrid.setVisible(true);

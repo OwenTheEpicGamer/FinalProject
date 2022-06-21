@@ -35,7 +35,7 @@ public class alg {
         //printSet(wordList);
     }
 
-    private void printSet(Set<String> set) {
+    public void printSet(Set<String> set) {
         for (String s : set) {
             System.out.println(s);
         }
@@ -91,17 +91,17 @@ public class alg {
         }
     }
 
-    public void generateWordlist(char[][] grid, int size) {
+    public void generateWordlist(char[][] grid) {
         wordList = new HashSet<String>();
         for (int row = 0; row < 5; row++) {
             for (int column = 0; column < 5; column++) {
                 String startLetter = String.valueOf(grid[row][column]);
-                checkPossibilities(startLetter, row, column);
+                checkPossibilities(startLetter, row, column, grid);
             }
         }
     }
 
-    private void checkPossibilities(String word, int row, int column) {
+    private void checkPossibilities(String word, int row, int column, char[][] grid) {
         if (word.length() > 15) {
             return;
         }
@@ -120,7 +120,7 @@ public class alg {
             int nextRow = coord[0];
             int nextColumn = coord[1];
             String newWord = word + grid[nextRow][nextColumn];
-            checkPossibilities(newWord, nextRow, nextColumn);
+            checkPossibilities(newWord, nextRow, nextColumn, grid);
         }
 
         occupied[row][column] = false;
