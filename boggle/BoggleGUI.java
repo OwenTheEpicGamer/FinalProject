@@ -95,6 +95,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     int currentTime;
     Time time;
     SimpleDateFormat timerFormat = new SimpleDateFormat("mm:ss");
+    boolean bellRung;
     
     JLabel lblP1 = new JLabel();
     JLabel lblP2 = new JLabel();
@@ -379,6 +380,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 ex.printStackTrace();
             }
             
+            gameTimer.stop();
+            
             // quit current game played
             pnlPlayScores.setVisible(false);
             pnlBoggleGrid.setVisible(false);
@@ -451,16 +454,19 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
             }
             else {
-                try {
-                    playSound("Sounds/bellsound.wav");
-                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                if(!bellRung) {
+                    try {
+                        playSound("Sounds/bellsound.wav");
+                    } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
                         ex.printStackTrace();
+                    }
+                    bellRung = true;
                 }
-                
                 currentTime = timeLimit;
                 time = new Time(currentTime* 1000L); // create time object
                 lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
                 btnSkip.doClick();
+                bellRung = false;
             }
         }
         // if timer is paused
