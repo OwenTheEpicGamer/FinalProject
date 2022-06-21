@@ -184,7 +184,7 @@ public class alg {
             if (d == 0 && sL < wL && sL >= minLength) {
                 word = s;
             }
-            if (d == 1 && (sL == 3 || sL == 4 || sL == 5) && sL >= minLength) {
+            if (d == 1 && (sL == 3 || sL == 4) && sL >= minLength) {
                 return s;
             }
         }
@@ -194,6 +194,9 @@ public class alg {
     // get word list
     public Set<String> getWordList() {
         return wordList;
+    }
+    public void usedWord(String word) {
+        wordList.remove(word);
     }
 
 }
