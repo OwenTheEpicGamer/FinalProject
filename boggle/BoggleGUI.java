@@ -107,6 +107,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
     int pointsEarned;
     int whosTurn; // stores the value of the current player (1 for player 1, 2 for player 2)
     
+    // initialize components for buffer panel
+    JPanel pnlPlayBuffer = new JPanel();
+    JLabel lblConfirm = new JLabel();
+    JButton btnContinue = new JButton("Continue");
+    JButton btnYes = new JButton("Yes, quit");
+    JButton btnNo = new JButton("No");
+    
     // initialize variables to store user configurations
     boolean multiPlayer = false;
     int tournScore;
@@ -502,7 +509,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 musicTimer.stop();
                 timeInSeconds = 0;
                 try {
-                    playBackgroundMusic(musicGenre);
+                    if (hasMusic) {
+                        playBackgroundMusic(musicGenre);
+                    }
                 } catch (IOException | UnsupportedAudioFileException | LineUnavailableException | InterruptedException ex) {
                     ex.printStackTrace();
                 }
@@ -933,6 +942,24 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblResult.setFont(fontSubtitle);
         lblResult.setForeground(colourDarkBlue);
         lblResult.setAlignmentX(Component.CENTER_ALIGNMENT);
+    
+        lblResult.setFont(fontSubtitle);
+        lblResult.setForeground(colourDarkBlue);
+        lblResult.setAlignmentX(Component.CENTER_ALIGNMENT);
+    
+        btnContinue.setFont(fontText);
+        btnContinue.setBorder(borderButton);
+        btnContinue.setForeground(colourNavy);
+        btnContinue.setBackground(colourPeach);
+        btnContinue.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnContinue.addActionListener(this);
+    
+        btnYes.setFont(fontText);
+        btnYes.setBorder(borderButton);
+        btnYes.setForeground(colourNavy);
+        btnYes.setBackground(colourPeach);
+        btnYes.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnYes.addActionListener(this);
     }
     
     // add play board components to frame
@@ -1013,6 +1040,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlPlayActions.add(btnShuffle);
         pnlPlayActions.add(Box.createRigidArea(new Dimension(20,30)));
         pnlPlayActions.add(lblResult);
+        
+        // add components to play buffer panel in proper format
+        pnlPlayBuffer.setLayout(new BoxLayout(pnlPlayActions, BoxLayout.PAGE_AXIS));
+        pnlPlayBuffer.add(lblConfirm);
+        pnlPlayBuffer.add(btnContinue);
+        pnlPlayBuffer.add(lblConfirm);
         
         // add play board panels to frame
         add(pnlPlayScores);
