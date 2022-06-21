@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 public class alg {
-    private final int SIZE;
+    private final int SIZE = 5;
     private boolean[][] occupied;
     private char[][] grid;
     private Set<String> dict;
@@ -13,9 +13,8 @@ public class alg {
     private int player1Points;
     private int minimumLength;
 
-    public alg(int SIZE) {
+    public alg() {
         // constructor method, makes all the variables and calls generateGrid();
-        this.SIZE = SIZE;
         occupied = new boolean[SIZE][SIZE];
         grid = new char[SIZE][SIZE];
         generateGrid(grid, SIZE);

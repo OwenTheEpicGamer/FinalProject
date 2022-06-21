@@ -7,7 +7,6 @@ import java.awt.event.*;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
-import boggle.alg.*;
 
 public class BoggleGUI extends JFrame implements ActionListener {
     // initialize top main panel components
@@ -288,7 +287,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
-            isValidWord = wordList.contains(wordEntered);
+            isValidWord = alg.word.contains(wordEntered);
             switchPlayers();
             resetWordEntered();
         }
