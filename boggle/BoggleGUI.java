@@ -83,14 +83,14 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JButton btnSkip = new JButton("Skip Turn");
     int skipCount = 0;
     JButton btnShuffle = new JButton("Shake Up the Board");
-    JLabel lblResult = new JLabel("1 point earned!");
+    JLabel lblResult = new JLabel(" ");
     int timesPlayed = 0;
-    
+    boolean isWinner = false;
     // initialize play scores panel components
     JPanel pnlPlayScores = new JPanel();
     
     Timer gameTimer = new Timer(1000, this);
-    JButton btnPauseTimer = new JButton("⏸");
+    JButton btnPauseTimer = new JButton("Pause/Play");
     JLabel lblTimer = new JLabel();
     int currentTime;
     Time time;
@@ -353,15 +353,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
                     lblP1.setText("You");
                     lblP2.setText("Computer");
                     multiPlayer = false; // set game mode as single player
-                    // randomly pick first plauer
-                    whosTurn = (int)(Math.random()*2)+1;
-                    if (whosTurn == 1) {
-                        lblWhosTurn.setText("    YOUR TURN   ");
-                    }
-                    else {
-                        lblWhosTurn.setText("COMPUTER'S TURN ");
-                    }
-                    
+                    // set user as first player
+                    whosTurn = 1;
+                    lblWhosTurn.setText("    YOUR TURN   ");
                 }
                 
                 lblStartPlay.setText("Once the modes above have been set, click play to start!");
@@ -414,7 +408,19 @@ public class BoggleGUI extends JFrame implements ActionListener {
 
             if (isValidWord && wordEntered.length() >= minWordLength) {
                 switchPlayers();
-                resetWordEntered();
+                
+                if (isWinner) {
+                    btnQuit.doClick();
+                    if (whosTurn == 1 && multiPlayer) {
+                        lblStartPlay.setText("Player 2 wins!");
+                    }
+                    else if (whosTurn == 2 && multiPlayer) {
+                        lblStartPlay.setText("Player 1 wins!");
+                    }
+                }
+                else {
+                    resetWordEntered();
+                }
             }
             else {
                 lblResult.setText("Invalid word, try again.");
@@ -473,8 +479,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
         }
         // if timer is paused
-        else if (source == btnPauseTimer) {
+        else if (source == btnPauseTimer && gameTimer.isRunning()) {
             gameTimer.stop();
+        }
+        // if timer is played
+        else if (source == btnPauseTimer && !gameTimer.isRunning()) {
+            gameTimer.start();
         }
         else if (source == musicTimer) {
             timeInSeconds++;
@@ -504,7 +514,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
                             ex.printStackTrace();
                         }
     
-                        lblResult.setText(""); // clear results label
+                        lblResult.setText(" "); // clear results label
                         
                         if (occupiedEmpty()) {
                             wordEntered += boardLetters[i][j]; // add it to the word
@@ -831,7 +841,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblTimer.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         btnPauseTimer.setFont(fontText);
-        btnPauseTimer.setBorder(borderButton);
         btnPauseTimer.setForeground(colourNavy);
         btnPauseTimer.setBackground(colourPeach);
         btnPauseTimer.setAlignmentY(Component.BOTTOM_ALIGNMENT);
@@ -1023,8 +1032,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pointsEarned = algorithm.pointsEarned(wordEntered);
         
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
+            // see if winner
+            if (pointsEarned + pointsP1 >= tournScore) {
+                isWinner = true;
+            }
             // display points earned
-            if (pointsEarned != 0) {
+            else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
             }
@@ -1034,8 +1047,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
             lblWhosTurn.setText("PLAYER 2'S TURN");
         }
         else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
+            // see if winner
+            if (pointsEarned + pointsP2 >= tournScore) {
+                isWinner = true;
+            }
             // display points earned
-            if (pointsEarned != 0) {
+            else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
             }
@@ -1045,8 +1062,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
             lblWhosTurn.setText("PLAYER 1'S TURN");
         }
         else if (whosTurn == 1) { // currently single player's turn
+            // see if winner
+            if (pointsEarned + pointsP2 >= tournScore) {
+                isWinner = true;
+            }
             // display points earned
-            if (pointsEarned != 0) {
+            else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
             }
@@ -1054,12 +1075,17 @@ public class BoggleGUI extends JFrame implements ActionListener {
             // switch to computer
             whosTurn = 2;
             lblWhosTurn.setText("COMPUTER'S  TURN");
+            compTurn();
         }
         else { // currently computer's turn
+            // see if winner
+            if (pointsEarned + pointsP2 >= tournScore) {
+                isWinner = true;
+            }
             // display points earned
-            if (pointsEarned != 0) {
+            else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
-                lblResult.setText(pointsEarned + " point(s) earned!");
+                lblResult.setText("Computer played " + wordEntered + "point(s) earned " + wordEntered);
             }
             
             // switch to the single player
@@ -1069,9 +1095,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
     }
     
+    // play computer's word
     public void compTurn() {
         wordEntered = algorithm.computerGetsWord(compDifficulty);
+        btnEnterWord.doClick();
     }
+    
     public void playBackgroundMusic(int musicGenre) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
         musicTimer = new Timer(1000, this);
         musicTimer.start();
