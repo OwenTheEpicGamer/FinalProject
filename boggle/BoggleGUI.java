@@ -181,7 +181,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        
+
         // switch from main to instructions panel
         if (source == btnInstructions) {
             resetOccupied = true;
@@ -419,7 +419,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 if (isWinner) {
                     btnQuit.doClick();
                     if (whosTurn == 1 && multiPlayer) {
-
                         lblStartPlay.setText("Player 1 wins!");
                     }
                     else if (whosTurn == 2 && multiPlayer) {
@@ -430,8 +429,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
                     }
                     else {
                         lblStartPlay.setText("Computer wins!");
-
-                        lblStartPlay.setText("Player 2 wins!");
                     }
                 }
                 else {
@@ -504,8 +501,10 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         else if (source == musicTimer) {
             timeInSeconds++;
+            System.out.println(timeInSeconds);
         
             if(timeInSeconds == clipLength) {
+                System.out.println("boop");
                 musicTimer.stop();
                 timeInSeconds = 0;
                 try {
@@ -1078,8 +1077,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                pointsP1 += pointsEarned;
-                lblP1Score.setText(Integer.toString(pointsP1));
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
                 // switch to player 2
@@ -1094,8 +1092,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                pointsP2 += pointsEarned;
-                lblP2Score.setText(Integer.toString(pointsP2));
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
                 // switch to player 1
@@ -1110,10 +1107,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                pointsP1 += pointsEarned;
-                lblP1Score.setText(Integer.toString(pointsP1));
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
-                
+    
                 // switch to computer
                 whosTurn = 2;
                 lblWhosTurn.setText("COMPUTER'S  TURN");
@@ -1127,14 +1123,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             // display points earned
             else if (pointsEarned != 0) {
-                pointsP2 += pointsEarned;
-                lblP2Score.setText(Integer.toString(pointsP2));
-                lblResult.setText("Computer played " + wordEntered + "point(s) earned " + wordEntered);
-                
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                lblResult.setText("Computer played " + wordEntered + ", point(s) earned: " + pointsEarned);
+    
                 // switch to the single player
                 whosTurn = 1;
                 lblWhosTurn.setText("    YOUR TURN    ");
-                
             }
         }
         
@@ -1143,7 +1137,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
     // play computer's word
     public void compTurn() {
         wordEntered = algorithm.computerGetsWord(compDifficulty, minWordLength);
-        System.out.println(wordEntered);
         btnEnterWord.doClick();
     }
     
