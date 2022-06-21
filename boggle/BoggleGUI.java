@@ -83,6 +83,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JButton btnSkip = new JButton("Skip Turn");
     int skipCount = 0;
     JButton btnShuffle = new JButton("Shake Up the Board");
+    JLabel lblWordSumbitted = new JLabel(" ");
     JLabel lblResult = new JLabel(" ");
     int timesPassed = 0;
     boolean isWinner = false;
@@ -424,9 +425,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 
                 // reset timer
                 if (playTimed) {
-                    time = new Time(currentTime*1000L); // create time object
-                    lblTimer.setText(timerFormat.format(time)); // show time in format mm:ss
-                    gameTimer.start(); // start timer
+                    currentTime = timeLimit;
+                    time = new Time(currentTime* 1000L); // create time object
+                    lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
                 }
     
                 algorithm.usedWord(wordEntered);
@@ -549,6 +550,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
                         }
     
                         lblResult.setText(" "); // clear results label
+                        lblWordSumbitted.setText(" "); // clear word submitted label
                         
                         if (occupiedEmpty()) {
                             wordEntered += boardLetters[i][j]; // add it to the word
@@ -960,11 +962,11 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblResult.setFont(fontSubtitle);
         lblResult.setForeground(colourDarkBlue);
         lblResult.setAlignmentX(Component.CENTER_ALIGNMENT);
-    
-        lblResult.setFont(fontSubtitle);
-        lblResult.setForeground(colourDarkBlue);
-        lblResult.setAlignmentX(Component.CENTER_ALIGNMENT);
-    
+        
+        lblWordSumbitted.setFont(fontText);
+        lblWordSumbitted.setForeground(colourNavy);
+        lblWordSumbitted.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         btnContinue.setFont(fontText);
         btnContinue.setBorder(borderButton);
         btnContinue.setForeground(colourNavy);
@@ -1057,6 +1059,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlPlayActions.add(btnShuffle);
         pnlPlayActions.add(Box.createRigidArea(new Dimension(20,30)));
         pnlPlayActions.add(lblResult);
+        pnlPlayActions.add(Box.createRigidArea(new Dimension(20,5)));
+        pnlPlayActions.add(lblWordSumbitted);
         
         btnShuffle.setVisible(false);
         
@@ -1149,8 +1153,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
             else if (pointsEarned != 0) {
                 pointsP2 += pointsEarned;
                 lblP2Score.setText(Integer.toString(pointsP2));
-                lblResult.setText("<html>Computer played " + wordEntered + ", earning " + pointsEarned + " points.<html>");
-    
+                lblResult.setText("Computer earned " + pointsEarned + " point(s)!");
+                lblWordSumbitted.setText("Played word " + wordEntered);
+                
                 // switch to the single player
                 whosTurn = 1;
                 lblWhosTurn.setText("    YOUR TURN    ");
