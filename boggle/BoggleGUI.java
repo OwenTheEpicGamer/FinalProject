@@ -412,7 +412,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             
             isValidWord = (algorithm.getWordList()).contains(wordEntered); // determine if word is in the valid word list
 
-            if (isValidWord) {
+            if (isValidWord && wordEntered.length() >= minWordLength) {
                 switchPlayers();
                 resetWordEntered();
             }
@@ -923,9 +923,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
     public void addPlayBoard() {
         timesPlayed++;
     
-        // generate random board of characters
-        algorithm.generateGrid(boardLetters, 5);
-        
         // clear previously played game
         pnlPlayScores.removeAll();
         pnlBoggleGrid.removeAll();
@@ -936,7 +933,10 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblP2Score.setText("0");
         resetWordEntered();
         currentTime = timeLimit;
-    
+        
+        // generate random board of characters
+        algorithm.generateGrid(boardLetters, 5);
+        
         algorithm.generateWordlist(boardLetters, 5); // generate wordlist for new board
         
         pnlPlayScores.setVisible(true);
