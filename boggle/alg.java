@@ -34,8 +34,8 @@ public class alg {
 
         //System.out.println("ENTIRE DICTIONARY");
         //printSet(dict);
-        System.out.println("ALL POSSIBLE WORDS");
-        printSet(wordList);
+        //System.out.println("ALL POSSIBLE WORDS");
+        //printSet(wordList);
     }
 
     private void printSet(Set<String> set) {
@@ -105,10 +105,10 @@ public class alg {
     }
 
     private void checkPossibilities(String word, int row, int column) {
-        if (word.length() > 17) {
+        if (word.length() > 15) {
             return;
         }
-        if (word.length() <= 6 && word.length() > 1 && !prefixes.contains(word)) {
+        if (word.length() < 9 && word.length() > 1 && !prefixes.contains(word)) {
             return;
         }
 
@@ -130,7 +130,7 @@ public class alg {
     }
 
 
-    private int[][] returnNeighbours(int row, int column) {
+    public int[][] returnNeighbours(int row, int column) {
         ArrayList<int[]> neighbours = new ArrayList<int[]>(Arrays.asList(
                 new int[]{row + 1, column}, new int[]{row - 1, column},
                 new int[]{row, column + 1}, new int[]{row, column - 1},
@@ -176,6 +176,7 @@ public class alg {
     public Set<String> getWordList() {
         return wordList;
     }
+
 }
 
 
