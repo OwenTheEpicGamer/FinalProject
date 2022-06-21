@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
+import boggle.alg.*;
 
 public class BoggleGUI extends JFrame implements ActionListener {
     // initialize top main panel components
@@ -55,18 +56,14 @@ public class BoggleGUI extends JFrame implements ActionListener {
     // initialize boggle grid panel components
     JPanel pnlBoggleGrid = new JPanel();
     JButton[][] letters = new JButton[5][5];
-    char[][] boardLetters =
-            {{'a', 'b','c', 'd', 'e'},
-                    {'a', 'b','c', 'd', 'e'},
-                    {'a', 'b','c', 'd', 'e'},
-                    {'a', 'b','c', 'd', 'e'},
-                    {'a', 'b','c', 'd', 'e'}};
+    char[][] boardLetters = new char[5][5];
     
     // initialize play actions panel components
     JPanel pnlPlayActions = new JPanel();
     JLabel lblWhosTurn = new JLabel();
     JLabel lblWordEntered = new JLabel("__ __ __ __ __ __");
     String wordEntered = ""; // stores the word entered
+    boolean isValidWord;
     JButton btnEnterWord = new JButton("Enter Word");
     JButton btnClearWord = new JButton("Clear Word");
     JButton btnSkip = new JButton("Skip Turn");
@@ -291,6 +288,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
+            isValidWord = wordList.contains(wordEntered);
             switchPlayers();
             resetWordEntered();
         }
@@ -314,6 +312,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 currentTime = timeLimit;
                 time = new Time(currentTime* 1000L); // create time object
                 lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
+                btnSkip.doClick();
             }
         }
         // if timer is paused
@@ -514,7 +513,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         JLabel[] lblGenres = new JLabel[3];
         lblGenres[0] = new JLabel("Classical");
         lblGenres[1] = new JLabel("Electronic");
-        lblGenres[2] = new JLabel("Lo-fi");
+        lblGenres[2] = new JLabel("Relaxing");
         for (int i = 0; i < lblGenres.length; i++) {
             lblGenres[i].setFont(fontText);
             hashLblMusic.put(i, lblGenres[i]);
@@ -652,7 +651,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         for (int i = 0; i < letters.length; i++) {
             for (int j = 0; j < letters[i].length; j++) {
                 // set format
-                letters[i][j] = new JButton("A");
+                letters[i][j] = new JButton();
                 letters[i][j].setFont(fontButton);
                 letters[i][j].setBackground(colourBlue);
                 letters[i][j].setForeground(colourNavy);
@@ -726,10 +725,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
         // start timer
         if (playTimed) {
-            time = new Time(currentTime* 1000L); // create time object
+            time = new Time(currentTime*1000L); // create time object
             lblTimer.setText(timerFormat.format(time)); // show time in format mm:ss
             gameTimer.start(); // start timer
         }
+        
+        // generate random board of characters
+        alg.generateGrid(boardLetters, 5);
         
         // add components to play scores panel in proper format
         pnlPlayScores.setLayout(new BoxLayout(pnlPlayScores, BoxLayout.PAGE_AXIS));
@@ -784,7 +786,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
         add(pnlPlayActions);
     }
     
-    
     // reset the board after a word is entered
     public void resetWordEntered() {
         // clear word entered
@@ -801,8 +802,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // add points to current player and switch to the next player
     public void switchPlayers() {
-        System.out.println(wordEntered);
-        
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
             // calculate and display points earned
             pointsP1 = alg.addPoints(wordEntered, pointsP1);
