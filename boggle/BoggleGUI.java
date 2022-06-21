@@ -77,8 +77,10 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JButton btnEnterWord = new JButton("Enter Word");
     JButton btnClearWord = new JButton("Clear Word");
     JButton btnSkip = new JButton("Skip Turn");
+    int skipCount = 0;
     JButton btnShuffle = new JButton("Shake Up the Board");
     JLabel lblResult = new JLabel("1 point earned!");
+    int timesPlayed = 0;
     
     // initialize play scores panel components
     JPanel pnlPlayScores = new JPanel();
@@ -89,7 +91,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
     int currentTime;
     Time time;
     SimpleDateFormat timerFormat = new SimpleDateFormat("mm:ss");
-    boolean bellRung = false;
     
     JLabel lblP1 = new JLabel();
     JLabel lblP2 = new JLabel();
@@ -372,16 +373,15 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 ex.printStackTrace();
             }
             
-            isValidWord = (algorithm.getWordList()).contains(wordEntered);
-            switchPlayers();
-            resetWordEntered();
-            
+            isValidWord = (algorithm.getWordList()).contains(wordEntered); // determine if word is in the valid word list
+
             if (isValidWord) {
                 switchPlayers();
                 resetWordEntered();
             }
             else {
-            
+                lblResult.setText("Invalid word, try again.");
+                resetWordEntered();
             }
         }
         // if used wants to clear the word on play board
@@ -403,6 +403,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
             catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
                 ex.printStackTrace();
             }
+    
+            lblResult.setText("Turn skipped.");
             resetWordEntered();
             switchPlayers();
         }
@@ -414,19 +416,16 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
             }
             else {
-                if(!bellRung) {
-                    try {
-                        playSound("Sounds/bellsound.wav");
-                    } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                try {
+                    playSound("Sounds/bellsound.wav");
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
                         ex.printStackTrace();
-                    }
-                    bellRung = true;
                 }
+                
                 currentTime = timeLimit;
                 time = new Time(currentTime* 1000L); // create time object
                 lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
                 btnSkip.doClick();
-                bellRung = false;
             }
         }
         // if timer is paused
@@ -446,6 +445,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
                         catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
                             ex.printStackTrace();
                         }
+                        
+                        lblResult.setText(""); // clear results label
                         
                         wordEntered += boardLetters[i][j]; // add it to the word
                         
@@ -634,8 +635,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         // set up music genre slider labels and add to hashtable
         JLabel[] lblGenres = new JLabel[3];
         lblGenres[0] = new JLabel("Classical");
-        lblGenres[1] = new JLabel("Electronic");
-        lblGenres[2] = new JLabel("Relaxing");
+        lblGenres[1] = new JLabel("Relaxing");
+        lblGenres[2] = new JLabel("Upbeat");
         for (int i = 0; i < lblGenres.length; i++) {
             lblGenres[i].setFont(fontText);
             hashLblMusic.put(i, lblGenres[i]);
@@ -828,18 +829,24 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // add play board components to frame
     public void addPlayBoard() {
-        // clear previously played game
-        pnlPlayScores.removeAll();
-        pnlBoggleGrid.removeAll();
-        pnlPlayActions.removeAll();
-        pointsP1 = 0;
-        pointsP2 = 0;
-        lblP1Score.setText("0");
-        lblP2Score.setText("0");
-        resetWordEntered();
-        currentTime = timeLimit;
+        timesPlayed++;
         
-        // display cleaned panels
+        // if game has been played before
+        if (timesPlayed > 1) {
+            // clear previously played game
+            pnlPlayScores.removeAll();
+            pnlBoggleGrid.removeAll();
+            pnlPlayActions.removeAll();
+            pointsP1 = 0;
+            pointsP2 = 0;
+            lblP1Score.setText("0");
+            lblP2Score.setText("0");
+            resetWordEntered();
+            currentTime = timeLimit;
+    
+            algorithm.generateWordlist(); // generate wordlist for new board
+        }
+    
         pnlPlayScores.setVisible(true);
         pnlBoggleGrid.setVisible(true);
         pnlPlayActions.setVisible(true);
@@ -924,11 +931,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // add points to current player and switch to the next player
     public void switchPlayers() {
+        pointsEarned = algorithm.pointsEarned(wordEntered);
+        lblResult.setText(pointsEarned + " point(s) earned!");
+    
+    
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
             // calculate and display points earned
-            pointsEarned = algorithm.pointsEarned(wordEntered);
             lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
-            lblResult.setText(pointsEarned + " point(s) earned!");
             
             // switch to player 2
             whosTurn = 2;
@@ -939,6 +948,11 @@ public class BoggleGUI extends JFrame implements ActionListener {
             pointsEarned = algorithm.pointsEarned(wordEntered);
             lblP2Score.setText(Integer.toString(pointsP2 + pointsEarned));
             
+            if (pointsEarned != 0) {
+                lblResult.setText(pointsEarned + " point(s) earned!");
+    
+            }
+            
             // switch to player 1
             whosTurn = 1;
             lblWhosTurn.setText("PLAYER 1'S TURN");
@@ -947,7 +961,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
             // calculate and display points earned
             pointsEarned = algorithm.pointsEarned(wordEntered);
             lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
-            
+            lblResult.setText(pointsEarned + " point(s) earned!");
+    
             // switch to computer
             whosTurn = 2;
             lblWhosTurn.setText("COMPUTER'S  TURN");
@@ -965,30 +980,25 @@ public class BoggleGUI extends JFrame implements ActionListener {
     }
     
     public void playBackgroundMusic(String genre) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
-        while(true){
-            String soundName = "";
-            Random rand = new Random();
-            if(genre.equals("classical")) {
-                int num = rand.nextInt(3) + 1;
-                soundName = "Sounds/classical" + num + ".wav";
-            }
-            if(genre.equals("upbeat")) {
-                int num = rand.nextInt(3) + 1;
-                soundName = "Sounds/upbeat" + num + ".wav";
-            }
-            if(genre.equals("relaxing")) {
-                int num = rand.nextInt(6) + 1;
-                soundName = "Sounds/relaxing" + num + ".wav";
-            }
-            
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
-            clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            //clip.start();
-            
-            while(clip.getMicrosecondLength() != clip.getMicrosecondPosition()) {
-            }
-        }
+         String soundName = "";
+         Random rand = new Random();
+         if(genre.equals("classical")) {
+             int num = rand.nextInt(3) + 1;
+             soundName = "Sounds/classical" + num + ".wav";
+         }
+         if(genre.equals("upbeat")) {
+             int num = rand.nextInt(3) + 1;
+             soundName = "Sounds/upbeat" + num + ".wav";
+         }
+         if(genre.equals("relaxing")) {
+             int num = rand.nextInt(6) + 1;
+             soundName = "Sounds/relaxing" + num + ".wav";
+         }
+         
+         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+         clip = AudioSystem.getClip();
+         clip.open(audioInputStream);
+         clip.start();
     }
     
     public void playSound(String fileName) throws IOException, UnsupportedAudioFileException, LineUnavailableException {

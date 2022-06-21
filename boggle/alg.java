@@ -94,7 +94,7 @@ public class alg {
         }
     }
 
-    private void generateWordlist() {
+    public void generateWordlist() {
         wordList = new HashSet<String>();
         for (int row = 0; row < SIZE; row++) {
             for (int column = 0; column < SIZE; column++) {
