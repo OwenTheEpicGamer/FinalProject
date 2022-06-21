@@ -7,6 +7,14 @@ import java.awt.event.*;
 import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Hashtable;
+import javax.sound.sampled.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.io.File;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+import java.util.Random;
 
 public class BoggleGUI extends JFrame implements ActionListener {
     // create object algorithm
@@ -81,6 +89,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     int currentTime;
     Time time;
     SimpleDateFormat timerFormat = new SimpleDateFormat("mm:ss");
+    boolean bellRung = false;
     
     JLabel lblP1 = new JLabel();
     JLabel lblP2 = new JLabel();
@@ -104,6 +113,10 @@ public class BoggleGUI extends JFrame implements ActionListener {
     int compDifficulty = 0;
     int minWordLength = 3;
     
+    // sound
+    Clip clipAudio;
+    Clip clip;
+    
     // initialize layouts
     BoxLayout lytBoxPage = new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS);
     
@@ -125,7 +138,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
     Color colourBlue = new Color(166, 217, 241);
     
     // constructor
-    public BoggleGUI() {
+    public BoggleGUI() throws UnsupportedAudioFileException, LineUnavailableException, IOException, InterruptedException {
+        System.out.println("constructor");
         // store randomly generated letters
         for (int i = 0; i < boardLetters.length; i++) {
             for (int j = 0; j < boardLetters[i].length; j++) {
@@ -144,7 +158,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
         buildInstructionsMenu(); // build instructions menu
         buildSettingsMenu(); // build settings menu
         buildPlayBoard(); // build play board
-        
+    
+        playBackgroundMusic("relaxing");
+    
         setVisible(true);
     }
     
@@ -153,12 +169,26 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
         // switch from main to instructions panel
         if (source == btnInstructions) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             pnlMainTop.setVisible(false);
             pnlMainBtm.setVisible(false);
             pnlInstructions.setVisible(true);
         }
         // switch from instructions panel to main panel
         else if (source == btnBack) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             // hide instructions panel
             pnlInstructions.setVisible(false);
             
@@ -168,23 +198,46 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from main to settings panel
         else if (source == btnSettings) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             pnlMainTop.setVisible(false);
             pnlMainBtm.setVisible(false);
             pnlSettings.setVisible(true);
         }
         // if state of music check box in settings is changed
         else if (source == chkMusic) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             if (chkMusic.isSelected()) { // show option to set  genre if user wants music
+                clip.start();
                 lblMusic.setVisible(true);
                 sldrMusic.setVisible(true);
             }
             else { // hide option to set genre if user does not want music
+                clip.stop();
                 lblMusic.setVisible(false);
                 sldrMusic.setVisible(false);
             }
         }
         // if state of timer check box in settings is changed
         else if (source == chkTimed) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+    
             if (chkTimed.isSelected()) { // show option to set time limit if user wants to play timed
                 lblTimed.setVisible(true);
                 sldrTimed.setVisible(true);
@@ -196,6 +249,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from settings panel to main panel
         else if (source == btnSave) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+    
             // store user configurations
             hasSoundEffects = chkSound.isSelected();
             hasMusic = chkMusic.isSelected();
@@ -214,6 +274,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from main to play panel
         else if (source == btnPlay) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             // determine if the tournament score entered is valid
             if (txtTournScore.getText().matches("-?\\d+")) { // if tournament score is an integer
                 tournScore = Integer.parseInt(txtTournScore.getText()); // store value
@@ -275,6 +342,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from play panel to main panel
         else if (source == btnQuit) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             // quit current game played
             pnlPlayScores.setVisible(false);
             pnlBoggleGrid.setVisible(false);
@@ -291,6 +365,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             isValidWord = (algorithm.getWordList()).contains(wordEntered);
             switchPlayers();
             resetWordEntered();
@@ -305,10 +386,23 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if used wants to clear the word on play board
         else if (source == btnClearWord) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
+            
             resetWordEntered();
         }
         // if user wants to skip their turn
         else if (source == btnSkip) {
+            try {
+                playSound("Sounds/buttonsound.wav");
+            }
+            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
             resetWordEntered();
             switchPlayers();
         }
@@ -320,10 +414,19 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
             }
             else {
+                if(!bellRung) {
+                    try {
+                        playSound("Sounds/bellsound.wav");
+                    } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                        ex.printStackTrace();
+                    }
+                    bellRung = true;
+                }
                 currentTime = timeLimit;
                 time = new Time(currentTime* 1000L); // create time object
                 lblTimer.setText(timerFormat.format(time)); // format the time in mm:ss
                 btnSkip.doClick();
+                bellRung = false;
             }
         }
         // if timer is paused
@@ -337,6 +440,13 @@ public class BoggleGUI extends JFrame implements ActionListener {
             for (int i = 0; i < letters.length; i++) {
                 for (int j = 0; j < letters[i].length; j++) {
                     if (source == letters[i][j]) { // if the letter is clicked on
+                        try {
+                            playSound("Sounds/buttonsound.wav");
+                        }
+                        catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                            ex.printStackTrace();
+                        }
+                        
                         wordEntered += boardLetters[i][j]; // add it to the word
                         
                         // display on board
@@ -413,6 +523,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlMainBtm.add(btnInstructions);
         pnlMainBtm.add(Box.createRigidArea(new Dimension(0,10)));
         pnlMainBtm.add(btnSettings);
+    
         
         // add main menu panels to frame
         add(pnlMainTop);
@@ -817,6 +928,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             // calculate and display points earned
             pointsEarned = algorithm.pointsEarned(wordEntered);
             lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+            lblResult.setText(pointsEarned + " point(s) earned!");
             
             // switch to player 2
             whosTurn = 2;
@@ -852,7 +964,41 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
     }
     
-    public static void main(String[] args) {
+    public void playBackgroundMusic(String genre) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
+        while(true){
+            String soundName = "";
+            Random rand = new Random();
+            if(genre.equals("classical")) {
+                int num = rand.nextInt(3) + 1;
+                soundName = "Sounds/classical" + num + ".wav";
+            }
+            if(genre.equals("upbeat")) {
+                int num = rand.nextInt(3) + 1;
+                soundName = "Sounds/upbeat" + num + ".wav";
+            }
+            if(genre.equals("relaxing")) {
+                int num = rand.nextInt(6) + 1;
+                soundName = "Sounds/relaxing" + num + ".wav";
+            }
+            
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundName).getAbsoluteFile());
+            clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            //clip.start();
+            
+            while(clip.getMicrosecondLength() != clip.getMicrosecondPosition()) {
+            }
+        }
+    }
+    
+    public void playSound(String fileName) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(fileName).getAbsoluteFile());
+        clipAudio = AudioSystem.getClip();
+        clipAudio.open(audioInputStream);
+        clipAudio.start();
+    }
+    
+    public static void main(String[] args) throws UnsupportedAudioFileException, LineUnavailableException, IOException, InterruptedException {
         BoggleGUI myBoggle = new BoggleGUI();
     }
 }
