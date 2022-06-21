@@ -371,6 +371,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 // switch to play panel
                 pnlMainTop.setVisible(false);
                 pnlMainBtm.setVisible(false);
+                resetScores();
                 addPlayBoard();
             }
         }
@@ -391,19 +392,39 @@ public class BoggleGUI extends JFrame implements ActionListener {
             
             gameTimer.stop();
             
-            // quit current game played
+            // hide current game played
             pnlPlayScores.setVisible(false);
             pnlBoggleGrid.setVisible(false);
             pnlPlayActions.setVisible(false);
+            
+            // set up confirmation to quit game
+            lblConfirm.setText("Are you sure you want to quit the game?");
+            btnContinue.setVisible(false);
+            btnYes.setVisible(true);
+            btnNo.setVisible(true);
+            pnlPlayBuffer.setVisible(true);
+        }
+        else if (source == btnYes) { // switch from play to main menu
+            pnlPlayBuffer.setVisible(false);
+            
             remove(pnlPlayScores);
             remove(pnlBoggleGrid);
             remove(pnlPlayActions);
-            
+    
             setLayout(lytBoxPage); // revert frame layout
-            
-            // set main manu as visible
+    
+            // set main menu as visible
             pnlMainTop.setVisible(true);
             pnlMainBtm.setVisible(true);
+        }
+        else if (source == btnNo) { // user does not want to quit game
+            pnlPlayBuffer.setVisible(false);
+            pnlPlayScores.setVisible(true);
+            pnlBoggleGrid.setVisible(true);
+            pnlPlayActions.setVisible(true);
+    
+            gameTimer.start(); // continue timer
+    
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
@@ -662,7 +683,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
         pnlMainBtm.add(btnInstructions);
         pnlMainBtm.add(Box.createRigidArea(new Dimension(0,10)));
         pnlMainBtm.add(btnSettings);
-    
         
         // add main menu panels to frame
         add(pnlMainTop);
@@ -967,6 +987,10 @@ public class BoggleGUI extends JFrame implements ActionListener {
         lblWordSumbitted.setForeground(colourNavy);
         lblWordSumbitted.setAlignmentX(Component.CENTER_ALIGNMENT);
         
+        lblConfirm.setFont(fontSubtitle);
+        lblConfirm.setForeground(colourDarkBlue);
+        lblConfirm.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
         btnContinue.setFont(fontText);
         btnContinue.setBorder(borderButton);
         btnContinue.setForeground(colourNavy);
@@ -974,24 +998,35 @@ public class BoggleGUI extends JFrame implements ActionListener {
         btnContinue.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnContinue.addActionListener(this);
     
-        btnYes.setFont(fontText);
+        btnYes.setFont(fontSubtitle);
         btnYes.setBorder(borderButton);
         btnYes.setForeground(colourNavy);
         btnYes.setBackground(colourPeach);
         btnYes.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnYes.addActionListener(this);
+    
+        btnNo.setFont(fontSubtitle);
+        btnNo.setBorder(borderButton);
+        btnNo.setForeground(colourNavy);
+        btnNo.setBackground(colourPeach);
+        btnNo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnNo.addActionListener(this);
     }
     
-    // add play board components to frame
-    public void addPlayBoard() {
-        // clear previously played game
-        pnlPlayScores.removeAll();
-        pnlBoggleGrid.removeAll();
-        pnlPlayActions.removeAll();
+    // reset scores
+    public void resetScores() {
         pointsP1 = 0;
         pointsP2 = 0;
         lblP1Score.setText("0");
         lblP2Score.setText("0");
+    }
+    
+    // add play board components to frame
+    public void addPlayBoard() {
+        // clear previous board
+        pnlPlayScores.removeAll();
+        pnlBoggleGrid.removeAll();
+        pnlPlayActions.removeAll();
         resetWordEntered();
         currentTime = timeLimit;
         lblResult.setText(" ");
@@ -1066,15 +1101,22 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
         // add components to play buffer panel in proper format
         pnlPlayBuffer.setLayout(new BoxLayout(pnlPlayBuffer, BoxLayout.PAGE_AXIS));
+        pnlPlayBuffer.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pnlPlayBuffer.setBorder(new EmptyBorder(80, 450, 0, 0));
         pnlPlayBuffer.add(lblConfirm);
+        pnlPlayBuffer.add(Box.createRigidArea(new Dimension(0,30)));
         pnlPlayBuffer.add(btnContinue);
+        pnlPlayBuffer.add(Box.createRigidArea(new Dimension(0,10)));
         pnlPlayBuffer.add(btnYes);
+        pnlPlayBuffer.add(Box.createRigidArea(new Dimension(0,10)));
         pnlPlayBuffer.add(btnNo);
-    
+        pnlPlayBuffer.add(Box.createRigidArea(new Dimension(0,10)));
+        pnlPlayBuffer.setVisible(false);
         // add play board panels to frame
         add(pnlPlayScores);
         add(pnlBoggleGrid);
         add(pnlPlayActions);
+        add(pnlPlayBuffer);
     }
     
     // reset the board after a word is entered
