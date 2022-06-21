@@ -414,6 +414,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             isValidWord = (algorithm.getWordList()).contains(wordEntered); // determine if word is in the valid word list
 
             if (isValidWord && wordEntered.length() >= minWordLength) {
+                algorithm.usedWord(wordEntered);
                 switchPlayers();
                 
                 if (isWinner) {
