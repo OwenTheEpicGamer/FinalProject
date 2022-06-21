@@ -1,3 +1,10 @@
+/**
+ * Algorithm Class for Boggle Assignment
+ * Purpose is to manage the algorithmic functions for the GUI
+ * Designed by Kian and Owen
+ * Handles searching capabilities and grid manipulation
+ */
+
 package boggle;
 
 import java.io.*;
@@ -7,11 +14,10 @@ public class alg {
     private final int SIZE = 5;
     private boolean[][] occupied;
     private char[][] grid;
+    // hashsets must be globally declared
     private Set<String> dict;
     private Set<String> prefixes;
     private Set<String> wordList;
-    private int player1Points;
-    private int minimumLength;
 
     public alg() {
         // constructor method, makes all the variables and calls generateGrid();
@@ -36,6 +42,7 @@ public class alg {
     }
 
     public void printSet(Set<String> set) {
+        //this is only for debugging purposes
         for (String s : set) {
             System.out.println(s);
         }
@@ -52,18 +59,19 @@ public class alg {
                 "fiprsy", "gorrvw", "hiprry", "nootuw", "ooottu"));
 
         Random rand = new Random();
-
+        // creates the grid using randomized dice and removes dice after single use
         for (int row = 0; row < size; row++) {
             for (int column = 0; column < size; column++) {
                 int randomLetter = rand.nextInt(6);
                 int randomDice = rand.nextInt(dice.size());
                 grid[row][column] = dice.get(randomDice).charAt(randomLetter);
+                dice.remove(randomDice);
             }
         }
     }
 
     private void generateDict() {
-        //dict = new HashSet<String>();
+        //deserializes hashset from file
         try {
             FileInputStream readFile = new FileInputStream("dictHashSet");
             ObjectInputStream fileInputStream = new ObjectInputStream(readFile);
@@ -78,6 +86,7 @@ public class alg {
     }
 
     private void openPrefixes() {
+        //deserializes prefixes from file
         try {
             FileInputStream readFile = new FileInputStream("prefixesHashSet");
             ObjectInputStream fileInputStream = new ObjectInputStream(readFile);
@@ -92,6 +101,7 @@ public class alg {
     }
 
     public void generateWordlist(char[][] grid) {
+        // runs the recusrive call on every letter on the board
         wordList = new HashSet<String>();
         for (int row = 0; row < 5; row++) {
             for (int column = 0; column < 5; column++) {
@@ -102,6 +112,7 @@ public class alg {
     }
 
     private void checkPossibilities(String word, int row, int column, char[][] grid) {
+        // terminates words too long or whos prefixes cannot exist
         if (word.length() > 15) {
             return;
         }
@@ -128,6 +139,7 @@ public class alg {
 
 
     public int[][] returnNeighbours(int row, int column) {
+        // returns all valid neighbours for a cell
         ArrayList<int[]> neighbours = new ArrayList<int[]>(Arrays.asList(
                 new int[]{row + 1, column}, new int[]{row - 1, column},
                 new int[]{row, column + 1}, new int[]{row, column - 1},
@@ -153,10 +165,10 @@ public class alg {
     }
 
     public int pointsEarned(String word) {
+        // calculates the total of points earned by a word
         if (word.length() == 0) {
             return 0;
-        }
-        else if (word.length() <= 4) {
+        } else if (word.length() <= 4) {
             return 1;
         } else if (word.length() == 5) {
             return 2;
@@ -168,11 +180,12 @@ public class alg {
             return 11;
         }
     }
-    
+
     public String computerGetsWord(int d, int minLength) {
+        // returns a word chosen by the computer
         String word = d == 0 ? "aaaaaaaaaaaaaaa" : "a";
-        int sL = 0;
-        int wL = 0;
+        int sL;
+        int wL;
 
         for (String s : wordList) {
             sL = s.length();
@@ -190,11 +203,12 @@ public class alg {
         }
         return word;
     }
-    
-    // get word list
+
+    // getter and setter methods
     public Set<String> getWordList() {
         return wordList;
     }
+
     public void usedWord(String word) {
         wordList.remove(word);
     }
