@@ -1,7 +1,8 @@
 /**
- * Algorithm Class for Boggle Assignment
- * Purpose is to manage the algorithmic functions for the GUI
- * Designed by Kian and Owen
+ * Algorithm Class for Boggle Culminating Project
+ * Purpose: Manage the algorithmic and AI-based functions for the GUI
+ * Contributors: Kian and Owen
+ * Date: June 10 - June 20
  * Handles searching capabilities and grid manipulation
  */
 
@@ -10,7 +11,7 @@ package boggle;
 import java.io.*;
 import java.util.*;
 
-public class alg {
+public class BoggleAI {
     private final int SIZE = 5;
     private boolean[][] occupied;
     private char[][] grid;
@@ -19,7 +20,7 @@ public class alg {
     private Set<String> prefixes;
     private Set<String> wordList;
 
-    public alg() {
+    public BoggleAI() {
         // constructor method, makes all the variables and calls generateGrid();
         occupied = new boolean[SIZE][SIZE];
         grid = new char[SIZE][SIZE];
@@ -101,7 +102,7 @@ public class alg {
     }
 
     public void generateWordlist(char[][] grid) {
-        // runs the recusrive call on every letter on the board
+        // runs the recursive call on every letter on the board
         wordList = new HashSet<String>();
         for (int row = 0; row < 5; row++) {
             for (int column = 0; column < 5; column++) {
