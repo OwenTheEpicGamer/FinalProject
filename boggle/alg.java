@@ -19,7 +19,7 @@ public class alg {
         this.SIZE = SIZE;
         occupied = new boolean[SIZE][SIZE];
         grid = new char[SIZE][SIZE];
-        generateGrid();
+        generateGrid(grid, SIZE);
         generateDict();
         openPrefixes();
         generateWordlist();
@@ -47,7 +47,7 @@ public class alg {
 
     }
 
-    private void generateGrid() {
+    public static void generateGrid(char[][] grid, int size) {
         // makes grid for the first time randomly
         ArrayList<String> dice = new ArrayList<String>(List.of(
                 "aaafrs", "aaeeee", "aafirs", "adennn", "aeeeem",
@@ -58,8 +58,8 @@ public class alg {
 
         Random rand = new Random();
 
-        for (int row = 0; row < SIZE; row++) {
-            for (int column = 0; column < SIZE; column++) {
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
                 int randomLetter = rand.nextInt(6);
                 int randomDice = rand.nextInt(dice.size());
                 grid[row][column] = dice.get(randomDice).charAt(randomLetter);
@@ -158,7 +158,10 @@ public class alg {
     }
 
     public static int addPoints(String word, int pointsCount) {
-        if (word.length() <= 4) {
+        if (word.length() == 0) {
+            return pointsCount;
+        }
+        else if (word.length() <= 4) {
             return pointsCount + 1;
         } else if (word.length() == 5) {
             return pointsCount + 2;
