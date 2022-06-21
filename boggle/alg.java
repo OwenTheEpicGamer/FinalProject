@@ -5,7 +5,6 @@ import java.util.*;
 
 public class alg {
     private final int SIZE;
-    private final int MAX_WORD_SIZE = 11;
     private boolean[][] occupied;
     private char[][] grid;
     private Set<String> dict;
