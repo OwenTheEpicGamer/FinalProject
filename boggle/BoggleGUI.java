@@ -19,6 +19,10 @@ import java.util.Random;
 public class BoggleGUI extends JFrame implements ActionListener {
     // create object algorithm
     alg algorithm = new alg();
+    boolean[][] occupied = new boolean[5][5];
+    int currentRow = 0;
+    int currentCol = 0;
+    boolean resetOccupied = false;
     
     // initialize top main panel components
     JPanel pnlMainTop = new JPanel();
@@ -140,7 +144,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // constructor
     public BoggleGUI() throws UnsupportedAudioFileException, LineUnavailableException, IOException, InterruptedException {
-        System.out.println("constructor");
         // store randomly generated letters
         for (int i = 0; i < boardLetters.length; i++) {
             for (int j = 0; j < boardLetters[i].length; j++) {
@@ -160,7 +163,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         buildSettingsMenu(); // build settings menu
         buildPlayBoard(); // build play board
     
-        playBackgroundMusic("relaxing");
+        playBackgroundMusic(musicGenre);
     
         setVisible(true);
     }
@@ -170,6 +173,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
         // switch from main to instructions panel
         if (source == btnInstructions) {
+            resetOccupied = true;
+            
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -183,6 +188,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from instructions panel to main panel
         else if (source == btnBack) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -199,6 +206,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from main to settings panel
         else if (source == btnSettings) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -212,6 +221,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if state of music check box in settings is changed
         else if (source == chkMusic) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -220,18 +231,18 @@ public class BoggleGUI extends JFrame implements ActionListener {
             }
             
             if (chkMusic.isSelected()) { // show option to set  genre if user wants music
-                clip.start();
                 lblMusic.setVisible(true);
                 sldrMusic.setVisible(true);
             }
             else { // hide option to set genre if user does not want music
-                clip.stop();
                 lblMusic.setVisible(false);
                 sldrMusic.setVisible(false);
             }
         }
         // if state of timer check box in settings is changed
         else if (source == chkTimed) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -250,6 +261,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from settings panel to main panel
         else if (source == btnSave) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -266,6 +279,18 @@ public class BoggleGUI extends JFrame implements ActionListener {
             compDifficulty = sldrDifficulty.getValue();
             minWordLength = sldrMinWordLength.getValue();
             
+            if (hasMusic) {
+                try {
+                    clip.stop();
+                    playBackgroundMusic(musicGenre);
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException | InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            else {
+                clip.stop();
+            }
+            
             // hide settings panel
             pnlSettings.setVisible(false);
             
@@ -275,6 +300,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from main to play panel
         else if (source == btnPlay) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -343,6 +370,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // switch from play panel to main panel
         else if (source == btnQuit) {
+            resetOccupied = true;
+            
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -366,6 +395,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -386,6 +417,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if used wants to clear the word on play board
         else if (source == btnClearWord) {
+            resetOccupied = true;
+    
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -397,6 +430,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to skip their turn
         else if (source == btnSkip) {
+            resetOccupied = true;
+            
             try {
                 playSound("Sounds/buttonsound.wav");
             }
@@ -434,7 +469,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user clicks a letter on Boggle grid
         else {
-            rowLoop:
             // name outer loop
             for (int i = 0; i < letters.length; i++) {
                 for (int j = 0; j < letters[i].length; j++) {
@@ -445,20 +479,56 @@ public class BoggleGUI extends JFrame implements ActionListener {
                         catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
                             ex.printStackTrace();
                         }
-                        
+    
                         lblResult.setText(""); // clear results label
                         
-                        wordEntered += boardLetters[i][j]; // add it to the word
+                        if (occupiedEmpty()) {
+                            wordEntered += boardLetters[i][j]; // add it to the word
+                            // display on board
+                            lblWordEntered.setText(wordEntered);
+                            letters[i][j].setBackground(colourPeach);
+    
+                            currentRow = i;
+                            currentCol = j;
+                            occupied[i][j] = true;
+                        }
                         
-                        // display on board
-                        lblWordEntered.setText(wordEntered);
-                        letters[i][j].setBackground(colourPeach);
-                        
-                        break rowLoop; // break out of inner and outer for loop
+                        if (occupied[i][j]) {
+                            return;
+                        }
+                        for (int[] n : algorithm.returnNeighbours(i, j)) {
+                            // if the current cell is found in the neighbours of the clicked cell
+                            if ((n[0] == currentRow && n[1] == currentCol)) {
+                                System.out.println("cell is being added");
+                                wordEntered += boardLetters[i][j]; // add it to the word
+                                lblWordEntered.setText(wordEntered);
+                                letters[i][j].setBackground(colourPeach);
+                                currentRow = i;
+                                currentCol = j;
+                                occupied[i][j] = true;
+                            }
+                        }
                     }
                 }
             }
         }
+        
+        if (resetOccupied) {
+            occupied = new boolean[5][5];
+            resetOccupied = false;
+        }
+    }
+    
+    public boolean occupiedEmpty() {
+        for (int i = 0; i < letters.length; i++) {
+            for (int j = 0; j < letters[i].length; j++) {
+                System.out.println(occupied[i][j]);
+                if (occupied[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     // set components for main menu and add to frame
@@ -635,8 +705,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         // set up music genre slider labels and add to hashtable
         JLabel[] lblGenres = new JLabel[3];
         lblGenres[0] = new JLabel("Classical");
-        lblGenres[1] = new JLabel("Relaxing");
-        lblGenres[2] = new JLabel("Upbeat");
+        lblGenres[1] = new JLabel("Upbeat");
+        lblGenres[2] = new JLabel("Relaxing");
         for (int i = 0; i < lblGenres.length; i++) {
             lblGenres[i].setFont(fontText);
             hashLblMusic.put(i, lblGenres[i]);
@@ -932,25 +1002,23 @@ public class BoggleGUI extends JFrame implements ActionListener {
     // add points to current player and switch to the next player
     public void switchPlayers() {
         pointsEarned = algorithm.pointsEarned(wordEntered);
-        lblResult.setText(pointsEarned + " point(s) earned!");
-    
-    
+        
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
-            // calculate and display points earned
-            lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+            // display points earned
+            if (pointsEarned != 0) {
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                lblResult.setText(pointsEarned + " point(s) earned!");
+            }
             
             // switch to player 2
             whosTurn = 2;
             lblWhosTurn.setText("PLAYER 2'S TURN");
         }
         else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
-            // calculate and display points earned
-            pointsEarned = algorithm.pointsEarned(wordEntered);
-            lblP2Score.setText(Integer.toString(pointsP2 + pointsEarned));
-            
+            // display points earned
             if (pointsEarned != 0) {
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
-    
             }
             
             // switch to player 1
@@ -958,19 +1026,22 @@ public class BoggleGUI extends JFrame implements ActionListener {
             lblWhosTurn.setText("PLAYER 1'S TURN");
         }
         else if (whosTurn == 1) { // currently single player's turn
-            // calculate and display points earned
-            pointsEarned = algorithm.pointsEarned(wordEntered);
-            lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
-            lblResult.setText(pointsEarned + " point(s) earned!");
+            // display points earned
+            if (pointsEarned != 0) {
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                lblResult.setText(pointsEarned + " point(s) earned!");
+            }
     
             // switch to computer
             whosTurn = 2;
             lblWhosTurn.setText("COMPUTER'S  TURN");
         }
         else { // currently computer's turn
-            // calculate and display points earned
-            pointsEarned = algorithm.pointsEarned(wordEntered);
-            lblP2Score.setText(Integer.toString(pointsP2 + pointsEarned));
+            // display points earned
+            if (pointsEarned != 0) {
+                lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
+                lblResult.setText(pointsEarned + " point(s) earned!");
+            }
             
             // switch to the single player
             whosTurn = 1;
@@ -979,18 +1050,18 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
     }
     
-    public void playBackgroundMusic(String genre) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
+    public void playBackgroundMusic(int musicGenre) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
          String soundName = "";
          Random rand = new Random();
-         if(genre.equals("classical")) {
+         if(musicGenre == 0) {
              int num = rand.nextInt(3) + 1;
              soundName = "Sounds/classical" + num + ".wav";
          }
-         if(genre.equals("upbeat")) {
+         if(musicGenre == 1) {
              int num = rand.nextInt(3) + 1;
              soundName = "Sounds/upbeat" + num + ".wav";
          }
-         if(genre.equals("relaxing")) {
+         if(musicGenre == 2) {
              int num = rand.nextInt(6) + 1;
              soundName = "Sounds/relaxing" + num + ".wav";
          }
