@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Hashtable;
 
 public class BoggleGUI extends JFrame implements ActionListener {
+    // create object algorithm
+    alg algorithm = new alg();
+    
     // initialize top main panel components
     JPanel pnlMainTop = new JPanel();
     JLabel lblBoggleTitle = new JLabel("ⓑ ⓞ ⓖ ⓖ ⓛ ⓔ");
@@ -86,6 +89,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     JButton btnQuit = new JButton("◀ Quit");
     int pointsP1 = 0; // points of player 1
     int pointsP2 = 0; // points of player 2
+    int pointsEarned;
     int whosTurn; // stores the value of the current player (1 for player 1, 2 for player 2)
     
     // initialize variables to store user configurations
@@ -287,9 +291,21 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
+<<<<<<< Updated upstream
             isValidWord = alg.word.contains(wordEntered);
             switchPlayers();
             resetWordEntered();
+=======
+            isValidWord = wordList.contains(wordEntered);
+            if (isValidWord) {
+                switchPlayers();
+                resetWordEntered();
+            }
+            else {
+            
+            }
+
+>>>>>>> Stashed changes
         }
         // if used wants to clear the word on play board
         else if (source == btnClearWord) {
@@ -803,7 +819,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     public void switchPlayers() {
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
             // calculate and display points earned
-            pointsP1 = alg.addPoints(wordEntered, pointsP1);
+            pointsP1 = alg.pointsEarned(wordEntered);
             lblP1Score.setText(Integer.toString(pointsP1));
             
             // switch to player 2
@@ -812,7 +828,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
             // calculate and display points earned
-            pointsP2 = alg.addPoints(wordEntered, pointsP2);
+            pointsP2 = alg.pointsEarned(wordEntered);
             lblP2Score.setText(Integer.toString(pointsP2));
             
             // switch to player 1
@@ -821,7 +837,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         else if (whosTurn == 1) { // currently single player's turn
             // calculate and display points earned
-            pointsP1 = alg.addPoints(wordEntered, pointsP1);
+            pointsP1 = alg.pointsEarned(wordEntered);
             lblP1Score.setText(Integer.toString(pointsP1));
             
             // switch to computer
@@ -830,7 +846,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         else { // currently computer's turn
             // calculate and display points earned
-            pointsP2 = alg.addPoints(wordEntered, pointsP2);
+            pointsP2 = alg.pointsEarned(wordEntered);
             lblP2Score.setText(Integer.toString(pointsP2));
             
             // switch to the single player

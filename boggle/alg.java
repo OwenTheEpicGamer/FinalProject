@@ -155,20 +155,20 @@ public class alg {
         return valid;
     }
 
-    public static int addPoints(String word, int pointsCount) {
+    public static int pointsEarned(String word) {
         if (word.length() == 0) {
-            return pointsCount;
+            return 0;
         }
         else if (word.length() <= 4) {
-            return pointsCount + 1;
+            return 1;
         } else if (word.length() == 5) {
-            return pointsCount + 2;
+            return 2;
         } else if (word.length() == 6) {
-            return pointsCount + 3;
+            return 3;
         } else if (word.length() == 7) {
-            return pointsCount + 5;
+            return 5;
         } else {
-            return pointsCount + 11;
+            return 11;
         }
     }
     
