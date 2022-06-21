@@ -170,28 +170,25 @@ public class alg {
     }
     
     public String computerGetsWord(int d, int minLength) {
-        String easy = "aaaaaaaaaaaaaaaa";
-        String med = "a";
-        String hard = "a";
-        
+        String word = d == 0 ? "aaaaaaaaaaaaaaa" : "a";
+        int sL = 0;
+        int wL = 0;
+
         for (String s : wordList) {
-            if (d == 3 && s.length() > hard.length()) {
-                hard = s;
+            sL = s.length();
+            wL = word.length();
+
+            if (d == 2 && sL > wL) {
+                word = s;
             }
-            if (d == 1 && s.length() < easy.length() && s.length() >= minLength) {
-                easy = s;
+            if (d == 0 && sL < wL && sL >= minLength) {
+                word = s;
             }
-            if (d == 4 && (s.length() == 4 || s.length() == 3 || s.length() == 5) && s.length() >= minLength) {
-                med = s;
+            if (d == 1 && (sL == 3 || sL == 4 || sL == 5) && sL >= minLength) {
+                return s;
             }
         }
-        return switch (d) {
-            case 1 -> easy;
-            case 2 -> med;
-            case 3 -> hard;
-            default -> "nothing";
-        };
-        
+        return word;
     }
     
     // get word list

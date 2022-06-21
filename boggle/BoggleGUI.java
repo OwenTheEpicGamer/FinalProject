@@ -174,7 +174,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        
+
         // switch from main to instructions panel
         if (source == btnInstructions) {
             resetOccupied = true;
@@ -1091,7 +1091,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             // display points earned
             else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
-                lblResult.setText("Computer played " + wordEntered + "point(s) earned " + wordEntered);
+                lblResult.setText("Computer played " + wordEntered + ", point(s) earned: " + pointsEarned);
     
                 // switch to the single player
                 whosTurn = 1;
