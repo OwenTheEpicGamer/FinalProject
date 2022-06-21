@@ -169,7 +169,7 @@ public class alg {
         }
     }
     
-    public String computerGetsWord(int d) {
+    public String computerGetsWord(int d, int minLength) {
         String easy = "aaaaaaaaaaaaaaaa";
         String med = "a";
         String hard = "a";
@@ -178,10 +178,10 @@ public class alg {
             if (d == 3 && s.length() > hard.length()) {
                 hard = s;
             }
-            if (d == 1 && s.length() < easy.length()) {
+            if (d == 1 && s.length() < easy.length() && s.length() >= minLength) {
                 easy = s;
             }
-            if (d == 4 && (s.length() == 4 || s.length() == 3 || s.length() == 5)) {
+            if (d == 4 && (s.length() == 4 || s.length() == 3 || s.length() == 5) && s.length() >= minLength) {
                 med = s;
             }
         }

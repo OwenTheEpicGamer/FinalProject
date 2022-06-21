@@ -1097,7 +1097,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     
     // play computer's word
     public void compTurn() {
-        wordEntered = algorithm.computerGetsWord(compDifficulty);
+        wordEntered = algorithm.computerGetsWord(compDifficulty, minWordLength);
         btnEnterWord.doClick();
     }
     
