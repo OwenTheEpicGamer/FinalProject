@@ -428,7 +428,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
                     lblTimer.setText(timerFormat.format(time)); // show time in format mm:ss
                     gameTimer.start(); // start timer
                 }
-                
+    
+                algorithm.usedWord(wordEntered);
                 switchPlayers();
                 
                 if (isWinner) {
