@@ -45,7 +45,7 @@ public class alg {
 
     }
 
-    public static void generateGrid(char[][] grid, int size) {
+    public void generateGrid(char[][] grid, int size) {
         // makes grid for the first time randomly
         ArrayList<String> dice = new ArrayList<String>(List.of(
                 "aaafrs", "aaeeee", "aafirs", "adennn", "aeeeem",
@@ -155,7 +155,7 @@ public class alg {
         return valid;
     }
 
-    public static int pointsEarned(String word) {
+    public int pointsEarned(String word) {
         if (word.length() == 0) {
             return 0;
         }
@@ -172,9 +172,9 @@ public class alg {
         }
     }
     
-    // determines if word entered is in the set of valid words
-    public boolean isValidWord(String word) {
-        return wordList.contains(word);
+    // get word list
+    public Set<String> getWordList() {
+        return wordList;
     }
 }
 

@@ -291,12 +291,10 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         // if user wants to enter a word on play board
         else if (source == btnEnterWord) {
-<<<<<<< Updated upstream
-            isValidWord = alg.word.contains(wordEntered);
+            isValidWord = (algorithm.getWordList()).contains(wordEntered);
             switchPlayers();
             resetWordEntered();
-=======
-            isValidWord = wordList.contains(wordEntered);
+            
             if (isValidWord) {
                 switchPlayers();
                 resetWordEntered();
@@ -304,8 +302,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
             else {
             
             }
-
->>>>>>> Stashed changes
         }
         // if used wants to clear the word on play board
         else if (source == btnClearWord) {
@@ -341,7 +337,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
             for (int i = 0; i < letters.length; i++) {
                 for (int j = 0; j < letters[i].length; j++) {
                     if (source == letters[i][j]) { // if the letter is clicked on
-                        wordEntered = wordEntered + boardLetters[i][j]; // add it to the word
+                        wordEntered += boardLetters[i][j]; // add it to the word
                         
                         // display on board
                         lblWordEntered.setText(wordEntered);
@@ -746,7 +742,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         
         // generate random board of characters
-        alg.generateGrid(boardLetters, 5);
+        algorithm.generateGrid(boardLetters, 5);
         
         // add components to play scores panel in proper format
         pnlPlayScores.setLayout(new BoxLayout(pnlPlayScores, BoxLayout.PAGE_AXIS));
@@ -819,8 +815,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
     public void switchPlayers() {
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
             // calculate and display points earned
-            pointsP1 = alg.pointsEarned(wordEntered);
-            lblP1Score.setText(Integer.toString(pointsP1));
+            pointsEarned = algorithm.pointsEarned(wordEntered);
+            lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
             
             // switch to player 2
             whosTurn = 2;
@@ -828,8 +824,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
             // calculate and display points earned
-            pointsP2 = alg.pointsEarned(wordEntered);
-            lblP2Score.setText(Integer.toString(pointsP2));
+            pointsEarned = algorithm.pointsEarned(wordEntered);
+            lblP2Score.setText(Integer.toString(pointsP2 + pointsEarned));
             
             // switch to player 1
             whosTurn = 1;
@@ -837,8 +833,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         else if (whosTurn == 1) { // currently single player's turn
             // calculate and display points earned
-            pointsP1 = alg.pointsEarned(wordEntered);
-            lblP1Score.setText(Integer.toString(pointsP1));
+            pointsEarned = algorithm.pointsEarned(wordEntered);
+            lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
             
             // switch to computer
             whosTurn = 2;
@@ -846,8 +842,8 @@ public class BoggleGUI extends JFrame implements ActionListener {
         }
         else { // currently computer's turn
             // calculate and display points earned
-            pointsP2 = alg.pointsEarned(wordEntered);
-            lblP2Score.setText(Integer.toString(pointsP2));
+            pointsEarned = algorithm.pointsEarned(wordEntered);
+            lblP2Score.setText(Integer.toString(pointsP2 + pointsEarned));
             
             // switch to the single player
             whosTurn = 1;
