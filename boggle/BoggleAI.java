@@ -26,30 +26,8 @@ public class BoggleAI {
         grid = new char[SIZE][SIZE];
         generateDict();
         openPrefixes();
-        System.out.println("dict size: " + dict.size());
-        System.out.println("prefix size: " + prefixes.size());
-
-        for (int r = 0; r < SIZE; r++) {
-            for (int c = 0; c < SIZE; c++) {
-                System.out.print(grid[r][c] + " ");
-            }
-            System.out.println();
-        }
-
-        //System.out.println("ENTIRE DICTIONARY");
-        //printSet(dict);
-        //System.out.println("ALL POSSIBLE WORDS");
-        //printSet(wordList);
     }
-
-    public void printSet(Set<String> set) {
-        //this is only for debugging purposes
-        for (String s : set) {
-            System.out.println(s);
-        }
-
-    }
-
+    
     public void generateGrid(char[][] grid, int size) {
         // makes grid for the first time randomly
         ArrayList<String> dice = new ArrayList<String>(List.of(
@@ -121,7 +99,6 @@ public class BoggleAI {
             return;
         }
 
-        //System.out.println(word);
         occupied[row][column] = true;
         if (dict.contains(word)) {
             wordList.add(word);
@@ -205,11 +182,12 @@ public class BoggleAI {
         return word;
     }
 
-    // getter and setter methods
+    // getter method
     public Set<String> getWordList() {
         return wordList;
     }
 
+    // remove used word from word list
     public void usedWord(String word) {
         wordList.remove(word);
     }

@@ -90,9 +90,8 @@ public class BoggleApplication extends JFrame implements ActionListener {
     JLabel lblResult = new JLabel(" ");
     int timesPassed = 0;
     boolean isWinner = false;
-    // initialize play scores panel components
-    JPanel pnlPlayScores = new JPanel();
-    
+
+    // timer components and variables
     Timer gameTimer = new Timer(1000, this);
     JButton btnPauseTimer = new JButton("Pause");
     JLabel lblTimer = new JLabel();
@@ -101,6 +100,8 @@ public class BoggleApplication extends JFrame implements ActionListener {
     SimpleDateFormat timerFormat = new SimpleDateFormat("mm:ss");
     boolean bellRung;
     
+    // initialize play scores panel components
+    JPanel pnlPlayScores = new JPanel();
     JLabel lblP1 = new JLabel();
     JLabel lblP2 = new JLabel();
     JLabel lblP1Score = new JLabel("0");
@@ -130,7 +131,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
     int compDifficulty = 0;
     int minWordLength = 3;
     
-    // sound
+    // sound components
     Clip clipAudio;
     Clip clip;
     Timer musicTimer = new Timer(1000, this);
@@ -257,7 +258,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
                 }
             }
             
-            if (chkMusic.isSelected()) { // show option to set  genre if user wants music
+            if (chkMusic.isSelected()) { // show option to set genre if user wants music
                 lblMusic.setVisible(true);
                 sldrMusic.setVisible(true);
             }
@@ -312,7 +313,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
             compDifficulty = sldrDifficulty.getValue();
             minWordLength = sldrMinWordLength.getValue();
             
-            if (hasMusic) {
+            if (hasMusic) { // play music of chosen genre if music is chosen
                 try {
                     clip.stop();
                     playBackgroundMusic(musicGenre);
@@ -320,7 +321,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
                     ex.printStackTrace();
                 }
             }
-            else {
+            else { // stop background music if music is not chosen
                 clip.stop();
             }
             
@@ -564,11 +565,13 @@ public class BoggleApplication extends JFrame implements ActionListener {
         else if (source == btnClearWord) {
             resetOccupied = true;
     
-            try {
-                playSound("Sounds/buttonsound.wav");
-            }
-            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
-                ex.printStackTrace();
+            if (hasSoundEffects) {
+                try {
+                    playSound("Sounds/buttonsound.wav");
+                }
+                catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                    ex.printStackTrace();
+                }
             }
             
             resetWordEntered();
@@ -577,16 +580,20 @@ public class BoggleApplication extends JFrame implements ActionListener {
         else if (source == btnSkip) {
             resetOccupied = true;
             timesPassed++;
+            
             if (timesPassed >= 2) {
                 btnShuffle.setVisible(true);
             }
-            try {
-                playSound("Sounds/bellsound.wav");
+            
+            if (hasSoundEffects) {
+                try {
+                    playSound("Sounds/bellsound.wav");
+                }
+                catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                    ex.printStackTrace();
+                }
             }
-            catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
-                ex.printStackTrace();
-            }
-    
+            
             lblResult.setText("Turn skipped.");
             lblWordSumbitted.setText(" ");
             resetWordEntered();
@@ -1283,12 +1290,11 @@ public class BoggleApplication extends JFrame implements ActionListener {
         if (whosTurn == 1 && multiPlayer) { // currently Player 1's turn
             pointsP1 += pointsEarned; // add points
     
-            // see if there is a winner
-            if (pointsP1 >= tournScore) {
+            if (pointsP1 >= tournScore) { // user won game
                 isWinner = true;
             }
-            // display points earned
-            else if (pointsEarned != 0) {
+            else if (pointsEarned > 0) { // user earned points
+                // display points earned
                 lblP1Score.setText(Integer.toString(pointsP1));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
@@ -1296,7 +1302,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
                 whosTurn = 2;
                 lblWhosTurn.setText("PLAYER 2'S TURN");
             }
-            else {
+            else { // user did not earn points
                 // switch to player 2
                 whosTurn = 2;
                 lblWhosTurn.setText("PLAYER 2'S TURN");
@@ -1305,13 +1311,12 @@ public class BoggleApplication extends JFrame implements ActionListener {
         }
         else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
             pointsP2 += pointsEarned; // add points
-    
-            // see if there is a winner
-            if (pointsP2 >= tournScore) {
+            
+            if (pointsP2 >= tournScore) { // user won game
                 isWinner = true;
             }
-            // display points earned
-            else if (pointsEarned != 0) {
+            else if (pointsEarned > 0) { // user earned points
+                // display points earned
                 lblP2Score.setText(Integer.toString(pointsP2));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
@@ -1319,7 +1324,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
                 whosTurn = 1;
                 lblWhosTurn.setText("PLAYER 1'S TURN");
             }
-            else {
+            else { // user did not earn points
                 // switch to player 1
                 whosTurn = 1;
                 lblWhosTurn.setText("PLAYER 1'S TURN");
@@ -1329,12 +1334,11 @@ public class BoggleApplication extends JFrame implements ActionListener {
         else if (whosTurn == 1) { // currently single player's turn
             pointsP1 += pointsEarned; // add points
     
-            // see if there is a winner
-            if (pointsP1 >= tournScore) {
+            if (pointsP1 >= tournScore) { // user won game
                 isWinner = true;
             }
-            // display points earned
-            else if (pointsEarned != 0) { // user earned points
+            else if (pointsEarned > 0) { // user earned points
+                // display points earned
                 lblP1Score.setText(Integer.toString(pointsP1));
                 lblResult.setText(pointsEarned + " point(s) earned!");
     
@@ -1354,12 +1358,11 @@ public class BoggleApplication extends JFrame implements ActionListener {
         else { // currently computer's turn
             pointsP2 += pointsEarned; // add points
     
-            // see if there is a winner
-            if (pointsP2 >= tournScore) {
+           if (pointsP2 >= tournScore) { // user won game
                 isWinner = true;
             }
-            // display points earned
-            else if (pointsEarned != 0) {
+            else if (pointsEarned > 0) { // user earned points
+                // display score and word played
                 lblP2Score.setText(Integer.toString(pointsP2));
                 lblResult.setText("Computer earned " + pointsEarned + " point(s)!");
                 lblWordSumbitted.setText("Played word " + wordEntered);
@@ -1368,7 +1371,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
                 whosTurn = 1;
                 lblWhosTurn.setText("    YOUR TURN    ");
             }
-            else {
+            else { // user did not earn points
                 // switch to the single player
                 whosTurn = 1;
                 lblWhosTurn.setText("    YOUR TURN    ");
@@ -1380,7 +1383,14 @@ public class BoggleApplication extends JFrame implements ActionListener {
     // play computer's turn
     public void compTurn() {
         wordEntered = algorithm.computerGetsWord(compDifficulty, minWordLength);
-        btnEnterWord.doClick();
+        
+        if ((int)(Math.random()*4) == 0) { // one in four chances that computer will pass
+            btnSkip.doClick();
+            lblResult.setText("Computer skipped turn.");
+        }
+        else { // three in four chances that computer will enter a word
+            btnEnterWord.doClick();
+        }
     }
     
     // play background music
