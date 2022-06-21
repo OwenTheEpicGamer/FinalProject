@@ -59,7 +59,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     Hashtable<Integer, JLabel> hashLblMusic = new Hashtable<Integer, JLabel>();
     JCheckBox chkTimed = new JCheckBox("Play timed", true);
     JLabel lblTimed = new JLabel("Set time limit (seconds):");
-    JSlider sldrTimed = new JSlider(10, 60, 15);
+    JSlider sldrTimed = new JSlider(10, 60, 45);
     JLabel lblDifficulty = new JLabel("Set computer difficulty:");
     JSlider sldrDifficulty = new JSlider(0, 2, 0);
     Hashtable<Integer, JLabel> hashLblDifficulty = new Hashtable<Integer, JLabel>();
@@ -115,7 +115,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
     boolean hasMusic = true;
     int musicGenre = 0;
     boolean playTimed = true;
-    int timeLimit = 15;
+    int timeLimit = 45;
     int compDifficulty = 0;
     int minWordLength = 3;
     
@@ -412,10 +412,16 @@ public class BoggleGUI extends JFrame implements ActionListener {
                 if (isWinner) {
                     btnQuit.doClick();
                     if (whosTurn == 1 && multiPlayer) {
-                        lblStartPlay.setText("Player 2 wins!");
+                        lblStartPlay.setText("Player 1 wins!");
                     }
                     else if (whosTurn == 2 && multiPlayer) {
-                        lblStartPlay.setText("Player 1 wins!");
+                        lblStartPlay.setText("Player 2 wins!");
+                    }
+                    else if (whosTurn == 1) {
+                        lblStartPlay.setText("You win!");
+                    }
+                    else {
+                        lblStartPlay.setText("Computer wins!");
                     }
                 }
                 else {
@@ -1040,11 +1046,11 @@ public class BoggleGUI extends JFrame implements ActionListener {
             else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
+    
+                // switch to player 2
+                whosTurn = 2;
+                lblWhosTurn.setText("PLAYER 2'S TURN");
             }
-            
-            // switch to player 2
-            whosTurn = 2;
-            lblWhosTurn.setText("PLAYER 2'S TURN");
         }
         else if (whosTurn == 2 && multiPlayer) { // currently Player 2's turn
             // see if winner
@@ -1055,11 +1061,11 @@ public class BoggleGUI extends JFrame implements ActionListener {
             else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
+    
+                // switch to player 1
+                whosTurn = 1;
+                lblWhosTurn.setText("PLAYER 1'S TURN");
             }
-            
-            // switch to player 1
-            whosTurn = 1;
-            lblWhosTurn.setText("PLAYER 1'S TURN");
         }
         else if (whosTurn == 1) { // currently single player's turn
             // see if winner
@@ -1070,12 +1076,12 @@ public class BoggleGUI extends JFrame implements ActionListener {
             else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText(pointsEarned + " point(s) earned!");
-            }
     
-            // switch to computer
-            whosTurn = 2;
-            lblWhosTurn.setText("COMPUTER'S  TURN");
-            compTurn();
+                // switch to computer
+                whosTurn = 2;
+                lblWhosTurn.setText("COMPUTER'S  TURN");
+                compTurn();
+            }
         }
         else { // currently computer's turn
             // see if winner
@@ -1086,11 +1092,11 @@ public class BoggleGUI extends JFrame implements ActionListener {
             else if (pointsEarned != 0) {
                 lblP1Score.setText(Integer.toString(pointsP1 + pointsEarned));
                 lblResult.setText("Computer played " + wordEntered + "point(s) earned " + wordEntered);
+    
+                // switch to the single player
+                whosTurn = 1;
+                lblWhosTurn.setText("    YOUR TURN    ");
             }
-            
-            // switch to the single player
-            whosTurn = 1;
-            lblWhosTurn.setText("    YOUR TURN    ");
         }
         
     }
