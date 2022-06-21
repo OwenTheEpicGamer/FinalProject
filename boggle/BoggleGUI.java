@@ -122,6 +122,9 @@ public class BoggleGUI extends JFrame implements ActionListener {
     // sound
     Clip clipAudio;
     Clip clip;
+    Timer musicTimer = new Timer(1000, this);
+    int timeInSeconds;
+    long clipLength;
     
     // initialize layouts
     BoxLayout lytBoxPage = new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS);
@@ -473,6 +476,21 @@ public class BoggleGUI extends JFrame implements ActionListener {
         else if (source == btnPauseTimer) {
             gameTimer.stop();
         }
+        else if (source == musicTimer) {
+            timeInSeconds++;
+            System.out.println(timeInSeconds);
+        
+            if(timeInSeconds == clipLength) {
+                System.out.println("boop");
+                musicTimer.stop();
+                timeInSeconds = 0;
+                try {
+                    playBackgroundMusic(musicGenre);
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException | InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
         // if user clicks a letter on Boggle grid
         else {
             // name outer loop
@@ -505,7 +523,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
                         for (int[] n : algorithm.returnNeighbours(i, j)) {
                             // if the current cell is found in the neighbours of the clicked cell
                             if ((n[0] == currentRow && n[1] == currentCol)) {
-                                System.out.println("cell is being added");
                                 wordEntered += boardLetters[i][j]; // add it to the word
                                 lblWordEntered.setText(wordEntered);
                                 letters[i][j].setBackground(colourPeach);
@@ -528,7 +545,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
     public boolean occupiedEmpty() {
         for (int i = 0; i < letters.length; i++) {
             for (int j = 0; j < letters[i].length; j++) {
-                System.out.println(occupied[i][j]);
                 if (occupied[i][j]) {
                     return false;
                 }
@@ -906,23 +922,23 @@ public class BoggleGUI extends JFrame implements ActionListener {
     // add play board components to frame
     public void addPlayBoard() {
         timesPlayed++;
+    
+        // generate random board of characters
+        algorithm.generateGrid(boardLetters, 5);
         
-        // if game has been played before
-        if (timesPlayed > 1) {
-            // clear previously played game
-            pnlPlayScores.removeAll();
-            pnlBoggleGrid.removeAll();
-            pnlPlayActions.removeAll();
-            pointsP1 = 0;
-            pointsP2 = 0;
-            lblP1Score.setText("0");
-            lblP2Score.setText("0");
-            resetWordEntered();
-            currentTime = timeLimit;
+        // clear previously played game
+        pnlPlayScores.removeAll();
+        pnlBoggleGrid.removeAll();
+        pnlPlayActions.removeAll();
+        pointsP1 = 0;
+        pointsP2 = 0;
+        lblP1Score.setText("0");
+        lblP2Score.setText("0");
+        resetWordEntered();
+        currentTime = timeLimit;
     
-            algorithm.generateWordlist(); // generate wordlist for new board
-        }
-    
+        algorithm.generateWordlist(boardLetters, 5); // generate wordlist for new board
+        
         pnlPlayScores.setVisible(true);
         pnlBoggleGrid.setVisible(true);
         pnlPlayActions.setVisible(true);
@@ -934,9 +950,6 @@ public class BoggleGUI extends JFrame implements ActionListener {
             lblTimer.setText(timerFormat.format(time)); // show time in format mm:ss
             gameTimer.start(); // start timer
         }
-        
-        // generate random board of characters
-        algorithm.generateGrid(boardLetters, 5);
         
         // add components to play scores panel in proper format
         pnlPlayScores.setLayout(new BoxLayout(pnlPlayScores, BoxLayout.PAGE_AXIS));
@@ -1056,8 +1069,14 @@ public class BoggleGUI extends JFrame implements ActionListener {
         
     }
     
+    public void compTurn() {
+        wordEntered = algorithm.computerGetsWord(compDifficulty);
+    }
     public void playBackgroundMusic(int musicGenre) throws IOException, UnsupportedAudioFileException, LineUnavailableException, InterruptedException {
-         String soundName = "";
+        musicTimer = new Timer(1000, this);
+        musicTimer.start();
+        
+        String soundName = "";
          Random rand = new Random();
          if(musicGenre == 0) {
              int num = rand.nextInt(3) + 1;
@@ -1076,6 +1095,7 @@ public class BoggleGUI extends JFrame implements ActionListener {
          clip = AudioSystem.getClip();
          clip.open(audioInputStream);
          clip.start();
+         clipLength = clip.getMicrosecondLength()/1000000;
     }
     
     public void playSound(String fileName) throws IOException, UnsupportedAudioFileException, LineUnavailableException {

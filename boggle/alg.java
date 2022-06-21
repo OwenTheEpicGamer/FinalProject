@@ -17,12 +17,9 @@ public class alg {
         // constructor method, makes all the variables and calls generateGrid();
         occupied = new boolean[SIZE][SIZE];
         grid = new char[SIZE][SIZE];
-        generateGrid(grid, SIZE);
         generateDict();
         openPrefixes();
-        generateWordlist();
         System.out.println("dict size: " + dict.size());
-        System.out.println("wordlist size: " + wordList.size());
         System.out.println("prefix size: " + prefixes.size());
 
         for (int r = 0; r < SIZE; r++) {
@@ -94,10 +91,10 @@ public class alg {
         }
     }
 
-    public void generateWordlist() {
+    public void generateWordlist(char[][] grid, int size) {
         wordList = new HashSet<String>();
-        for (int row = 0; row < SIZE; row++) {
-            for (int column = 0; column < SIZE; column++) {
+        for (int row = 0; row < 5; row++) {
+            for (int column = 0; column < 5; column++) {
                 String startLetter = String.valueOf(grid[row][column]);
                 checkPossibilities(startLetter, row, column);
             }
