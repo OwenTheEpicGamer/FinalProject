@@ -1,7 +1,7 @@
 /**
  * Algorithm Class for Boggle Culminating Project
  * Purpose: Manage the algorithmic and AI-based functions for the GUI
- * Contributors: Kian and Owen
+ * Contributors: Kian, Owen, Sarina
  * Date: June 10 - June 20
  * Handles searching capabilities and grid manipulation
  */
@@ -17,8 +17,8 @@ public class BoggleAI {
     private char[][] grid;
     // hashsets must be globally declared
     private Set<String> dict;
-    private Set<String> prefixes;
     private Set<String> wordList;
+    private Set<String> prefixes;
 
     public BoggleAI() {
         // constructor method, makes all the variables and calls generateGrid();

@@ -158,6 +158,8 @@ public class BoggleApplication extends JFrame implements ActionListener {
     Color colourPeach = new Color(252, 209, 154);
     Color colourBlue = new Color(166, 217, 241);
     
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
     // constructor
     public BoggleApplication() throws UnsupportedAudioFileException, LineUnavailableException, IOException, InterruptedException {
         // store randomly generated letters
@@ -171,8 +173,9 @@ public class BoggleApplication extends JFrame implements ActionListener {
         setTitle("Boggle");
         setLayout(lytBoxPage);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(1380,740); // set restored down size
-        
+        setSize(screenSize.width, screenSize.height); // set restored down size
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
         // set up panels
         buildMainMenu(); // build main menu
         buildInstructionsMenu(); // build instructions menu
@@ -795,7 +798,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
         
         // add components to first start panel in proper format
         pnlMainTop.setLayout(new BoxLayout(pnlMainTop, BoxLayout.Y_AXIS));
-        pnlMainTop.add(Box.createRigidArea(new Dimension(0,230))); // center the elements vertically
+        pnlMainTop.add(Box.createRigidArea(new Dimension(0,(int)(screenSize.height*0.2)))); // center the elements vertically
         pnlMainTop.add(lblBoggleTitle);
         pnlMainTop.add(Box.createRigidArea(new Dimension(0,35)));
         pnlMainTop.add(rbtnPlayer);
@@ -806,7 +809,7 @@ public class BoggleApplication extends JFrame implements ActionListener {
         pnlMainTop.add(lblStartPlay);
         pnlMainTop.add(Box.createRigidArea(new Dimension(0,18)));
         pnlMainTop.add(btnPlay);
-        pnlMainTop.add(Box.createRigidArea(new Dimension(0,100)));
+        pnlMainTop.add(Box.createRigidArea(new Dimension(0,(int)(screenSize.height*0.1))));
         
         // add components to second start panel in proper format
         pnlMainBtm.add(btnInstructions);
