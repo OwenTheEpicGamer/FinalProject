@@ -1,3 +1,5 @@
+PvP and PvC Boggle Application
+
 ## Note:
 the configuration is suited to INTELLIJ IDEA using the following specs
 
